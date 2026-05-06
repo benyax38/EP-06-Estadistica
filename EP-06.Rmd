@@ -61,6 +61,16 @@ print(nrow(datos))
 
 
 ```
+
+
+
+#### Condiciones procedimiento ANOVA para muestras correlacionadas:
+
+- 1: La escala con que se mide la variable dependiente tiene las propiedades de una escala de intervalos iguales.
+- 2: Las observaciones son independientes al interior de cada muestra.
+- 3: Se puede suponer razonablemente que las poblaciones de origen siguen una distribución normal.
+- 4: La matriz de varianzas-covarianzas es esférica. (Varianzas entre los diferentes niveles de medidas repetidas deben ser iguales).
+
 ### Problema 2
 Propongan una pregunta de investigación relacionada al impacto del lenguaje de programación inicial (con el que se aprendió a programar) que necesite ser analizado por medio de un procedimiento ANOVA para muestras correlacionadas con un factor que tenga entre 4 y 6 niveles. Luego invente una población para cada grupo con 5.000 datos, asegurando que cumpla las suposiciones de esta prueba.
 
