@@ -55,6 +55,7 @@ datos <- read.csv("EP06 Datos.csv", sep = ",", dec = ",")
 #datos <- subset(datos, select = c("id", "pais", "tipo", "tiempo"))
 head(datos)
 ```
+
 ```{r}
 print(nrow(datos))
 
