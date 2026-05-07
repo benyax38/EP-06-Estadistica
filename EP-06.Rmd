@@ -23,13 +23,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 ## Información General
+
 Un equipo de investigadores del área de interacción humano-información está estudiando si el área temática y el nivel de dificultad del problema de información influyen en el tiempo (en segundos) que toma un usuario en formular una consulta de búsqueda para resolver dicho problema. Para ello, han reclutado a un grupo de participantes voluntarios, asignados aleatoriamente a distintos grupos. Cada participante debe resolver tres problemas de información con diferentes niveles de dificultad: baja, media y alta. A su vez, cada grupo debe resolver problemas relacionados a una temática diferente. Los datos recolectados contemplan las siguientes variables:
 
-
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(kableExtra)
+
 tabla <- data.frame(
   Variable = c("id", "area", "dificultad", "tiempo"),
   Descripcion = c(
@@ -40,39 +40,221 @@ tabla <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
-print(kable(tabla), align)
+
+kable(tabla, format = "html", align = "ll") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"), 
+    full_width = FALSE,
+    position = "left"
+  )
 ```
 
+# Problema 1
 
-
-
-### Problema 1
 En este momento, los investigadores buscan determinar si existen diferencias en el tiempo que tardan los usuarios en formular consultas para problemas con diferente nivel de dificultad en el área de física.
 
-#### Respuesta 1
+# Respuesta 1
+
+Para determinar si existen diferencias significativas en el tiempo promedio que tardan los usuarios en formular consultas según el nivel de dificultad en el área de física, se haría un procedimiento ANOVA de una vía para muestras correlacionadas (también conocido como ANOVA de medidas repetidas).
+
+Dado que los mismos participantes realizan problemas en los tres niveles de dificultad, las mediciones entre niveles están correlacionadas dentro de cada sujeto. Por eso corresponde usar ANOVA para muestras correlacionadas. Sin embargo, se asume independencia entre participantes, ya que el desempeño de un usuario no debería influir en el desempeño de otro.
+
+Se cargan los datos, se filtra el área de Física y se realiza una exploración descriptiva inicial del tiempo de formulación de consultas según nivel de dificultad.
+
 ```{r}
+library(tidyverse)
+library(ez)
+
 datos <- read.csv("EP06 Datos.csv", sep = ",", dec = ",")
-#datos <- subset(datos, select = c("id", "pais", "tipo", "tiempo"))
-head(datos)
+
+datos_fisica <- datos %>%
+  filter(area == "Física") %>%
+  mutate(dificultad = factor(dificultad, levels = c("Baja", "Media", "Alta")))
+
+glimpse(datos_fisica)
+
+sum(is.na(datos_fisica))
+
+datos_fisica %>%
+  group_by(dificultad) %>%
+  summarise(
+    n = n(),
+    media = mean(tiempo, na.rm = TRUE),
+    sd = sd(tiempo, na.rm = TRUE),
+    mediana = median(tiempo, na.rm = TRUE),
+    minimo = min(tiempo, na.rm = TRUE),
+    maximo = max(tiempo, na.rm = TRUE),
+    .groups = "drop"
+  )
 ```
 
-```{r}
-print(nrow(datos))
+## Formulación de Hipótesis
 
+Para responder a la pregunta de investigación mediante el ANOVA de medidas repetidas, definimos las siguientes hipótesis:
 
+- $H_0$: El tiempo promedio que tardan los usuarios en formular consultas es el mismo para los tres niveles de dificultad en el área de Física ($\mu_{Baja} = \mu_{Media} = \mu_{Alta}$).
+- $H_A$: El tiempo promedio de formulación de consultas difiere significativamente para al menos un nivel de dificultad en el área de Física.
 
-```
+Antes de proceder con la ejecución de la prueba ómnibus, es fundamental verificar que los datos recolectados cumplen con los supuestos matemáticos que garantizan la validez de este procedimiento
 
-
-
-#### Condiciones procedimiento ANOVA para muestras correlacionadas:
+## Condiciones procedimiento ANOVA para muestras correlacionadas:
 
 - 1: La escala con que se mide la variable dependiente tiene las propiedades de una escala de intervalos iguales.
 - 2: Las observaciones son independientes al interior de cada muestra.
 - 3: Se puede suponer razonablemente que las poblaciones de origen siguen una distribución normal.
 - 4: La matriz de varianzas-covarianzas es esférica. (Varianzas entre los diferentes niveles de medidas repetidas deben ser iguales).
 
-### Problema 2
+## Verificación de condiciones
+
+### 1. Escala de intervalos iguales
+
+Se cumple esta condición de manera teórica. La variable dependiente del estudio es el tiempo que tardan los usuarios en formular la consulta, medido en segundos. El tiempo es una variable continua medida en una escala de razón (la cual posee las propiedades de una escala de intervalos iguales), dado que la magnitud de la diferencia entre cualquier par de valores consecutivos (ej. un segundo) es matemáticamente constante en toda la escala.
+
+### 2. Independencia al interior de cada muestra:
+
+El enunciado indica que los investigadores reclutaron a un grupo de participantes voluntarios que fueron asignados aleatoriamente a distintos grupos. Dado que cada usuario resuelve los problemas de manera individual, se puede asumir que el tiempo de respuesta de un participante no influye en el tiempo de otro. Por lo tanto, las observaciones dentro de cada nivel de dificultad son independientes entre sí.
+
+### 3. Normalidad de las poblaciones de origen
+
+Esta condición requiere que nuestra variable dependiente, el tiempo de respuesta, siga una distribución aproximadamente normal para cada uno de los niveles (dificultad Baja, Media y Alta). Dado que la pregunta se centra en los usuarios que resolvieron problemas del área de Física, se filtró la muestra y se aplicará la prueba de Shapiro-Wilk para cada nivel de dificultad de manera independiente:
+
+```{r}
+# Agrupar los datos
+datos_agrupados <- group_by(datos_fisica, dificultad)
+
+# Calcular la normalidad por grupo
+normalidad_fisica <- summarise(datos_agrupados, 
+                               p_valor = shapiro.test(tiempo)$p.value)
+
+# Mostrar resultados
+print("Resultados de la prueba de Shapiro-Wilk:")
+print(normalidad_fisica)
+
+ggplot(datos_fisica, aes(x = tiempo, fill = dificultad)) +
+  geom_histogram(bins = 30, color = "white", alpha = 0.85) +
+  facet_wrap(~ dificultad) +
+  scale_fill_manual(values = c(
+    "Baja" = "#8DD3C7",
+    "Media" = "#FDB462",
+    "Alta" = "#FB8072"
+  )) +
+  labs(
+    title = "Distribución del tiempo por nivel de dificultad",
+    x = "Tiempo en segundos",
+    y = "Frecuencia",
+    fill = "Dificultad"
+  ) +
+  theme_minimal()
+
+ggplot(datos_fisica, aes(sample = tiempo, color = dificultad)) +
+  stat_qq(alpha = 0.75) +
+  stat_qq_line(linewidth = 1) +
+  facet_wrap(~ dificultad) +
+  scale_color_manual(values = c(
+    "Baja" = "#8DD3C7",
+    "Media" = "#FDB462",
+    "Alta" = "#FB8072"
+  )) +
+  labs(
+    title = "Gráficos Q-Q por nivel de dificultad",
+    color = "Dificultad"
+  ) +
+  theme_minimal()
+
+ggplot(datos_fisica, aes(x = dificultad, y = tiempo, fill = dificultad)) +
+  geom_boxplot(alpha = 0.85, color = "gray30") +
+  scale_fill_manual(values = c(
+    "Baja" = "#8DD3C7",
+    "Media" = "#FDB462",
+    "Alta" = "#FB8072"
+  )) +
+  labs(
+    title = "Tiempo de formulación según dificultad en Física",
+    x = "Dificultad",
+    y = "Tiempo en segundos",
+    fill = "Dificultad"
+  ) +
+  theme_minimal()
+```
+
+Al observar los resultados de la prueba de Shapiro-Wilk, se aprecia que todos los p-valores son mayores a 0,05. Por lo tanto, no se rechaza la hipótesis nula de normalidad y se considera que este supuesto se cumple razonablemente.
+
+### 4. Esfericidad de la matriz de varianza-covarianza
+
+Esta condición es exclusiva de los diseños de medidas repetidas y establece que las varianzas de las diferencias entre todos los pares de niveles del factor deben ser iguales. Para verificar este supuesto, se utilizaría la Prueba de Mauchly.
+
+```{r}
+
+#1. Cargar librerías para ANOVA de medidas repetidas
+library(ez)
+
+#2. Ejecutar ANOVA ómnibus
+# dv: variable dependiente (tiempo)
+# wid: identificador del sujeto (id)
+# within: factor intra-sujetos (dificultad)
+# return_aov: para obtener el objeto aov si es necesario
+prueba_anova <- ezANOVA(data = datos_fisica, dv = tiempo, wid = id, within = dificultad, return_aov = TRUE)
+
+#3. Mostrar los resultados de la prueba de esfericidad de Mauchly
+print("--- Prueba de Esfericidad de Mauchly ---")
+print(prueba_anova)
+
+# 4. Mostrar los resultados del ANOVA (incluye correcciones si falló Mauchly)
+print("--- Resultados del ANOVA Ómnibus ---")
+print(prueba_anova$ANOVA)
+```
+
+Al ejecutar el procedimiento en R, se obtuvo un valor estadístico $W = 0,999$ con un p-valor de $0,912$. Dado que el p-valor es considerablemente superior al nivel de significación $\alpha = 0,05$, no se rechaza la hipótesis nula de esfericidad. Por lo tanto, se concluye que los datos cumplen con el supuesto de esfericidad y no es necesario aplicar correcciones (como Greenhouse-Geisser) a los grados de libertad del ANOVA.
+
+Una vez validados todos los supuestos, procedemos a interpretar los resultados de la prueba ANOVA Ómnibus generada en el paso anterior.
+
+Observando la tabla de resultados ANOVA, el estadístico de prueba es $F(2, 398) = 70,71$ con un valor p minúsculo (casi 0). Adicionalmente, el tamaño del efecto generalizado ($\eta^2_G$) es de $0,169$, lo que indica que el nivel de dificultad explica aproximadamente el 16,9% de la varianza en los tiempos de respuesta.
+
+Dado que el valor p es considerablemente menor al nivel de significación $\alpha = 0,05$, **se rechaza la hipótesis nula** ($H_0$). En consecuencia, existe evidencia estadísticamente significativa para afirmar que el tiempo promedio de formulación de consultas en el área de Física es diferente para al menos uno de los niveles de dificultad.
+
+## Análisis Post-hoc
+
+Debido a que la prueba ómnibus resultó significativa, es necesario aplicar un análisis post-hoc para identificar específicamente entre qué niveles de dificultad existen estas diferencias. Para un diseño de medidas repetidas, utilizaremos pruebas T de Student para muestras pareadas, aplicando el ajuste de Holm para controlar la tasa de falsos positivos (error de Tipo I) en comparaciones múltiples.
+
+```{r}
+library(tidyverse)
+
+datos_wide <- datos_fisica %>%
+  select(id, dificultad, tiempo) %>%
+  mutate(dificultad = factor(dificultad, levels = c("Baja", "Media", "Alta"))) %>%
+  pivot_wider(names_from = dificultad, values_from = tiempo) %>%
+  drop_na(Baja, Media, Alta)
+
+post_hoc_resultados <- data.frame(
+  comparacion = c("Baja vs Media", "Baja vs Alta", "Media vs Alta"),
+  p_valor = c(
+    t.test(datos_wide$Baja, datos_wide$Media, paired = TRUE)$p.value,
+    t.test(datos_wide$Baja, datos_wide$Alta, paired = TRUE)$p.value,
+    t.test(datos_wide$Media, datos_wide$Alta, paired = TRUE)$p.value
+  )
+)
+
+post_hoc_resultados$p_ajustado_Holm <- p.adjust(post_hoc_resultados$p_valor, method = "holm")
+
+post_hoc_resultados
+```
+
+## Respuesta a la pregunta planteada
+
+Al realizar el procedimiento ANOVA de una vía para muestras correlacionadas, se determinó que existen diferencias estadísticamente significativas en el tiempo que tardan los usuarios en formular consultas según el nivel de dificultad de los problemas en el área de Física ($F(2, 398) = 70,71$; $p < 0,001$).
+
+Para identificar específicamente dónde radican estas diferencias, se realizó un análisis post-hoc utilizando pruebas T de Student para muestras pareadas con corrección de Holm, el cual reveló lo siguiente:
+
+- Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Baja** ($p_{adj} < 0,001$).
+- Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Media** ($p_{adj} < 0,001$).
+- No existen diferencias estadísticamente significativas en el tiempo de respuesta entre los problemas de dificultad **Media y Baja** ($p_{adj} = 0,800$).
+
+## Conclusión
+
+El nivel de dificultad tiene un impacto significativo en el tiempo que tardan los usuarios en formular consultas en el área de Física. Específicamente, los problemas de dificultad Alta demandan un tiempo de formulación significativamente distinto en comparación con los problemas de dificultad Baja y Media, mientras que entre estos dos últimos no se observan diferencias estadísticas relevantes en el desempeño de los participantes.
+
+# Problema 2
+
 Propongan una pregunta de investigación relacionada al impacto del lenguaje de programación inicial (con el que se aprendió a programar) que necesite ser analizado por medio de un procedimiento ANOVA para muestras correlacionadas con un factor que tenga entre 4 y 6 niveles. Luego invente una población para cada grupo con 5.000 datos, asegurando que cumpla las suposiciones de esta prueba.
 
-#### Respuesta 2
+# Respuesta 2
