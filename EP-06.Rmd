@@ -258,3 +258,260 @@ El nivel de dificultad tiene un impacto significativo en el tiempo que tardan lo
 Propongan una pregunta de investigación relacionada al impacto del lenguaje de programación inicial (con el que se aprendió a programar) que necesite ser analizado por medio de un procedimiento ANOVA para muestras correlacionadas con un factor que tenga entre 4 y 6 niveles. Luego invente una población para cada grupo con 5.000 datos, asegurando que cumpla las suposiciones de esta prueba.
 
 # Respuesta 2
+
+¿Influye el lenguaje de programación inicial (Python, C++, Java o Go) en el tiempo (en minutos) que tarda un estudiante en resolver un algoritmo de ordenamiento complejo (como heapSort) después de 1, 3, 6 y 12 meses de práctica?
+
+Suposiciones para la prueba ANOVA de una vía para muestras correlacionadas:
+
+1. La escala con que se mide la variable dependiente tiene las propiedades de una escala de intervalos iguales --> Variable tiempo es de intervalos iguales
+2. Las observaciones son independientes al interior de cada muestra --> 
+3. Se puede suponer razonablemente que la(s) población(es) de origen sigue(n) una distribución normal.
+4. La matriz de varianzas-covarianzas es esférica. Como explica Horn (2008, p. 1), esta condición establece que las varianzas entre los diferentes niveles de las medidas repetidas deben ser iguales.
+
+3 opciones para generar datos:
+
+```{r}
+library(MASS)    # Necesaria para mvrnorm()
+library(dplyr)   # Opcional, para manipulación final de datos
+library(ggplot2) # Opcional, para visualización rápida
+
+# --- 1. CONFIGURACIÓN GLOBAL ---
+N_POR_GRUPO <- 5000  # Número de estudiantes por cada lenguaje
+N_MESES <- 4         # Los 4 momentos de medición (1, 3, 6, 12)
+
+# Definimos los nombres correctos para las columnas (las variables de tiempo)
+NOMBRES_COLUMNAS_TIEMPO <- c("1 mes", "3 meses", "6 meses", "12 meses")
+
+# --- 2. DEFINICIÓN DE LA ESTRUCTURA DE COVARIANZA (Constante para todos) ---
+# Asumimos que la variabilidad y la correlación intrínseca de un estudiante
+# es la misma, independientemente del lenguaje que use.
+
+VARIANZA_CONSTANTE <- 25 # Varianza igual en todos los meses (desv. estándar = 5)
+COVARIANZA_CONSTANTE <- 10 # Relación positiva entre mediciones del mismo sujeto
+
+# Generamos la matriz base con la covarianza
+sigma_global <- matrix(COVARIANZA_CONSTANTE, nrow=N_MESES, ncol=N_MESES)
+
+# Reemplazamos la diagonal con la varianza
+diag(sigma_global) <- VARIANZA_CONSTANTE
+
+# Asignamos los nombres de los meses a las filas y columnas de la matriz
+# (Esto hará que mvrnorm() asigne automáticamente estos nombres a las columnas de datos)
+rownames(sigma_global) <- NOMBRES_COLUMNAS_TIEMPO
+colnames(sigma_global) <- NOMBRES_COLUMNAS_TIEMPO
+
+
+# --- 3. FUNCIÓN GENERADORA DE POBLACIONES ---
+# Esta función toma las medias específicas de un lenguaje y genera sus datos.
+
+generar_datos_lenguaje <- function(nombre_lenguaje, vector_medias) {
+  
+  # Generación de la matriz multivariada de tiempos
+  tiempos_matriz <- mvrnorm(n = N_POR_GRUPO, mu = vector_medias, Sigma = sigma_global)
+  
+  # Convertimos la matriz en un 'data frame'
+  datos_df <- as.data.frame(tiempos_matriz)
+  
+  # Añadimos una columna para identificar el factor "Lenguaje"
+  datos_df$Lenguaje <- nombre_lenguaje
+  
+  # Aseguramos que la columna 'Lenguaje' sea un factor (importante para el ANOVA)
+  datos_df$Lenguaje <- as.factor(datos_df$Lenguaje)
+  
+  return(datos_df)
+}
+
+
+# --- 4. DEFINICIÓN DE MEDIAS Y GENERACIÓN DE GRUPOS ---
+# Aquí es donde simulamos el efecto de cada lenguaje.
+# *Nota: He ajustado las medias para que simulen un "efecto de aprendizaje" lógico:
+# los tiempos bajan conforme pasan los meses.*
+
+# Grupo 1: Python (Simulamos un aprendizaje rápido y eficiente)
+medias_python <- c(70, 60, 50, 45) # (1m, 3m, 6m, 12m)
+datos_python <- generar_datos_lenguaje("Python", medias_python)
+
+# Grupo 2: C++ (Simulamos una curva de aprendizaje inicial más difícil)
+medias_cpp <- c(80, 65, 55, 48)
+datos_cpp <- generar_datos_lenguaje("C++", medias_cpp)
+
+# Grupo 3: Java (Simulamos un rendimiento intermedio)
+medias_java <- c(75, 62, 53, 46)
+datos_java <- generar_datos_lenguaje("Java", medias_java)
+
+# Grupo 4: Go (Simulamos un rendimiento similar a Python pero con menos 'curva')
+medias_go <- c(72, 61, 51, 46)
+datos_go <- generar_datos_lenguaje("Go", medias_go)
+
+
+# --- 5. UNIÓN DE TODAS LAS POBLACIONES (DATASET FINAL) ---
+# Usamos rbind() para "pegar" una tabla debajo de la otra.
+
+dataset_completo <- rbind(datos_python, datos_cpp, datos_java, datos_go)
+
+
+# --- 6. VERIFICACIÓN DE RESULTADOS ---
+
+# Ver la estructura del dataset final
+str(dataset_completo)
+# Debería mostrar 20,000 obs. y 5 variables (4 de tiempo + 1 factor Lenguaje)
+
+# Ver las primeras filas
+head(dataset_completo)
+# Verás las columnas: "1 mes", "3 meses", "6 meses", "12 meses" y "Lenguaje"
+
+# Ver resumen estadístico rápido por grupo (usando dplyr para comodidad)
+# dataset_completo %>% group_by(Lenguaje) %>% summarize(
+#   Media_1m = mean(`1 mes`),
+#   Media_12m = mean(`12 meses`)
+# )
+```
+
+```{r}
+# =============================================================
+# ENFOQUE 2: MODELO DE EFECTOS ALEATORIOS (Sujeto como Base)
+# =============================================================
+
+n <- 5000
+
+generar_poblacion_sujetos <- function(nombre_lenguaje, medias_incremento) {
+  
+  # 1. Capacidad base del individuo (constante para el sujeto en el tiempo)
+  # Usamos una media de 50 como punto de partida neutral
+  sujetos_base <- rnorm(n, mean=50, sd=10) 
+  
+  # 2. Generamos los niveles (meses) sumando el efecto del tiempo a la base
+  # Cada nivel tiene su propia media de incremento y su error (sd=2)
+  mes1  <- sujetos_base + rnorm(n, mean = medias_incremento[1], sd = 2)
+  mes3  <- sujetos_base + rnorm(n, mean = medias_incremento[2], sd = 2)
+  mes6  <- sujetos_base + rnorm(n, mean = medias_incremento[3], sd = 2)
+  mes12 <- sujetos_base + rnorm(n, mean = medias_incremento[4], sd = 2)
+  
+  # 3. Creamos el data frame con los nombres que pediste
+  df <- data.frame(
+    "1 mes" = mes1,
+    "3 meses" = mes3,
+    "6 meses" = mes6,
+    "12 meses" = mes12,
+    Lenguaje = as.factor(nombre_lenguaje),
+    check.names = FALSE # Permite espacios en los nombres de columnas
+  )
+  
+  return(df)
+}
+
+# --- 3. GENERACIÓN DE CADA GRUPO ---
+# Nota: Aquí las medias son "incrementos" sobre la base de 50.
+# Si quieres que el total sea ~70, el incremento debe ser ~20.
+
+datos_python <- generar_poblacion_sujetos("Python", c(20, 15, 10, 5)) 
+datos_cpp    <- generar_poblacion_sujetos("C++",    c(30, 20, 15, 10))
+datos_java   <- df_java <- generar_poblacion_sujetos("Java",   c(25, 18, 12, 8))
+datos_go     <- generar_poblacion_sujetos("Go",     c(22, 16, 11, 7))
+
+# --- 4. UNIÓN FINAL ---
+dataset_final_sujetos <- rbind(datos_python, datos_cpp, datos_java, datos_go)
+
+# Verificación
+head(dataset_final_sujetos)
+```
+
+```{r}
+# =============================================================
+# SIMULACIÓN COMPLETA: IMPACTO DEL LENGUAJE INICIAL (FORMATO LARGO)
+# =============================================================
+
+# Configuración de parámetros globales
+n_sujetos_por_grupo <- 5000
+meses_labels <- c("1 mes", "3 meses", "6 meses", "12 meses")
+n_meses <- length(meses_labels)
+
+# 1. FUNCIÓN GENERADORA DE DATOS (Basada en el Enfoque 3)
+# -------------------------------------------------------------
+generar_poblacion_larga <- function(nombre_lenguaje, efecto_aprendizaje) {
+  
+  # Crear la estructura de malla (ID x Mes)
+  # Esto genera 20,000 filas por lenguaje (5,000 sujetos * 4 meses)
+  df_grupo <- expand.grid(
+    ID = 1:n_sujetos_por_grupo, 
+    Mes = factor(meses_labels, levels = meses_labels)
+  )
+  
+  # Efecto de Sujeto: La "habilidad intrínseca" constante por individuo [cite: 63]
+  sujeto_id_efecto <- rep(rnorm(n_sujetos_por_grupo, mean = 0, sd = 10), each = n_meses)
+  
+  # Efecto de Aprendizaje: La mejora (reducción de tiempo) promedio por mes [cite: 34]
+  # Repetimos el vector de aprendizaje para cada uno de los 5,000 sujetos
+  aprendizaje_efecto <- rep(efecto_aprendizaje, times = n_sujetos_por_grupo)
+  
+  # Error Aleatorio: El "ruido" específico de cada medición [cite: 64]
+  error <- rnorm(nrow(df_grupo), mean = 0, sd = 5)
+  
+  # Variable Dependiente (Tiempo): Media base de 80 minutos - mejora + variabilidad
+  df_grupo$Tiempo <- 80 - aprendizaje_efecto + sujeto_id_efecto + error
+  
+  # Factor Independiente: El lenguaje inicial [cite: 79]
+  df_grupo$Lenguaje <- as.factor(nombre_lenguaje)
+  
+  return(df_grupo)
+}
+
+# 2. GENERACIÓN DE LOS 4 GRUPOS (POBLACIONES)
+# -------------------------------------------------------------
+# El vector 'efecto_aprendizaje' simula cuántos minutos se ahorran en cada mes.
+
+# Python: Aprendizaje rápido y consistente
+datos_python <- generar_poblacion_larga("Python", c(10, 20, 30, 35))
+
+# C++: Curva inicial más difícil, mejora más lenta
+datos_cpp <- generar_poblacion_larga("C++", c(5, 12, 22, 28))
+
+# Java: Rendimiento intermedio
+datos_java <- generar_poblacion_larga("Java", c(7, 15, 25, 30))
+
+# Go: Eficiencia similar a Python
+datos_go <- generar_poblacion_larga("Go", c(9, 18, 28, 33))
+
+# 3. UNIÓN DE TODAS LAS POBLACIONES (DATASET FINAL)
+# -------------------------------------------------------------
+# rbind() apila las tablas una debajo de otra [cite: 37]
+dataset_final <- rbind(datos_python, datos_cpp, datos_java, datos_go)
+
+# 4. VERIFICACIÓN DEL RESULTADO
+# -------------------------------------------------------------
+# El dataset final debe tener 80,000 observaciones (20k por lenguaje)
+str(dataset_final)
+head(dataset_final)
+```
+
+Ejemplo en google tras buscar rnorm():
+
+```{r}
+# Generar 100 datos con media 50 y desviación estándar 10
+set.seed(123)  # Para reproducibilidad
+datos <- rnorm(n = 100, mean = 50, sd = 10)
+
+# Mostrar los primeros 10 valores
+head(datos, 10)
+```
+
+```{r}
+# Histograma con curva de densidad
+hist(datos, breaks = 15, probability = TRUE,
+     col = "lightblue", main = "Distribución Normal Simulada",
+     xlab = "Valor")
+
+# Añadir curva de densidad estimada
+lines(density(datos), col = "red", lwd = 2)
+
+# Añadir curva teórica normal
+curve(dnorm(x, mean = mean(datos), sd = sd(datos)),
+      col = "darkgreen", lwd = 2, add = TRUE)
+legend("topright", legend = c("Densidad estimada", "Normal teórica"),
+       col = c("red", "darkgreen"), lwd = 2)
+```
+
+
+
+
+
