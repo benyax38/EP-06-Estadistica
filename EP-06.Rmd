@@ -15,7 +15,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo      = TRUE, # Muestra código R en el documento
-  warning   = FALSE, # Oculta advertencias
+  # warning   = FALSE, # Oculta advertencias
   message   = FALSE, # Oculta mensajes (como los de carga de paquetes)
   fig.align = "center", # Centra imágenes
   fig.width = 7,
@@ -29,6 +29,11 @@ Un equipo de investigadores del área de interacción humano-información está 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(kableExtra)
+library(ggpubr)
+library(tidyr)
+library(tidyverse)
+
+
 
 tabla <- data.frame(
   Variable = c("id", "area", "dificultad", "tiempo"),
@@ -88,6 +93,9 @@ datos_fisica %>%
   )
 ```
 
+
+
+
 ## Formulación de Hipótesis
 
 Para responder a la pregunta de investigación mediante el ANOVA de medidas repetidas, definimos las siguientes hipótesis:
@@ -118,17 +126,19 @@ El enunciado indica que los investigadores reclutaron a un grupo de participante
 
 Esta condición requiere que nuestra variable dependiente, el tiempo de respuesta, siga una distribución aproximadamente normal para cada uno de los niveles (dificultad Baja, Media y Alta). Dado que la pregunta se centra en los usuarios que resolvieron problemas del área de Física, se filtró la muestra y se aplicará la prueba de Shapiro-Wilk para cada nivel de dificultad de manera independiente:
 
+
+```{r}
+ggqqplot(datos_fisica, x="tiempo", y="dificultad", color="dificultad", alpha=0.7) +
+  facet_wrap(~dificultad) + rremove("x.ticks") + rremove("x.text") + rremove("y.ticks") + rremove("y.text") + rremove("axis.title")
+
+```
+
+Podemos apreciar claramente que todos los puntos caen dentro del rango seguro.
+
 ```{r}
 # Agrupar los datos
 datos_agrupados <- group_by(datos_fisica, dificultad)
 
-# Calcular la normalidad por grupo
-normalidad_fisica <- summarise(datos_agrupados, 
-                               p_valor = shapiro.test(tiempo)$p.value)
-
-# Mostrar resultados
-print("Resultados de la prueba de Shapiro-Wilk:")
-print(normalidad_fisica)
 
 ggplot(datos_fisica, aes(x = tiempo, fill = dificultad)) +
   geom_histogram(bins = 30, color = "white", alpha = 0.85) +
@@ -146,35 +156,17 @@ ggplot(datos_fisica, aes(x = tiempo, fill = dificultad)) +
   ) +
   theme_minimal()
 
-ggplot(datos_fisica, aes(sample = tiempo, color = dificultad)) +
-  stat_qq(alpha = 0.75) +
-  stat_qq_line(linewidth = 1) +
-  facet_wrap(~ dificultad) +
-  scale_color_manual(values = c(
-    "Baja" = "#8DD3C7",
-    "Media" = "#FDB462",
-    "Alta" = "#FB8072"
-  )) +
-  labs(
-    title = "Gráficos Q-Q por nivel de dificultad",
-    color = "Dificultad"
-  ) +
-  theme_minimal()
+```
 
-ggplot(datos_fisica, aes(x = dificultad, y = tiempo, fill = dificultad)) +
-  geom_boxplot(alpha = 0.85, color = "gray30") +
-  scale_fill_manual(values = c(
-    "Baja" = "#8DD3C7",
-    "Media" = "#FDB462",
-    "Alta" = "#FB8072"
-  )) +
-  labs(
-    title = "Tiempo de formulación según dificultad en Física",
-    x = "Dificultad",
-    y = "Tiempo en segundos",
-    fill = "Dificultad"
-  ) +
-  theme_minimal()
+Para eliminar cualquier tipo de duda, podemos apreciar como los histogramas representan muy bien una distribución normal.
+
+```{r}
+normalidad_fisica <- summarise(datos_agrupados, 
+                               p_valor = shapiro.test(tiempo)$p.value)
+
+# Mostrar resultados
+print("Resultados de la prueba de Shapiro-Wilk:")
+print(normalidad_fisica)
 ```
 
 Al observar los resultados de la prueba de Shapiro-Wilk, se aprecia que todos los p-valores son mayores a 0,05. Por lo tanto, no se rechaza la hipótesis nula de normalidad y se considera que este supuesto se cumple razonablemente.
@@ -183,7 +175,7 @@ Al observar los resultados de la prueba de Shapiro-Wilk, se aprecia que todos lo
 
 Esta condición es exclusiva de los diseños de medidas repetidas y establece que las varianzas de las diferencias entre todos los pares de niveles del factor deben ser iguales. Para verificar este supuesto, se utilizaría la Prueba de Mauchly.
 
-```{r}
+```{r, warning=FALSE}
 
 #1. Cargar librerías para ANOVA de medidas repetidas
 library(ez)
@@ -217,26 +209,16 @@ Dado que el valor p es considerablemente menor al nivel de significación $\alph
 Debido a que la prueba ómnibus resultó significativa, es necesario aplicar un análisis post-hoc para identificar específicamente entre qué niveles de dificultad existen estas diferencias. Para un diseño de medidas repetidas, utilizaremos pruebas T de Student para muestras pareadas, aplicando el ajuste de Holm para controlar la tasa de falsos positivos (error de Tipo I) en comparaciones múltiples.
 
 ```{r}
-library(tidyverse)
+ezPlot(data = datos_fisica, dv = tiempo, wid = id, between = dificultad,
+       y_lab = "Tiempo de Resolución [s]", x = dificultad) +
+  ggtitle("Tiempos Medios e Intervalos de Confianza FLSD")
+```
+En primer lugar, con la ayuda de ezPlot, podemos ver como existe una diferencia importante entre los tiempos de resolución de la dificultad baja y alta, y media y alta. Pero no se aprecian diferencias significativas entre la dificultad baja y media, para confirmar esto numéricamente procedemos al análisis de pruebas t pareadas con la correción de holm.
 
-datos_wide <- datos_fisica %>%
-  select(id, dificultad, tiempo) %>%
-  mutate(dificultad = factor(dificultad, levels = c("Baja", "Media", "Alta"))) %>%
-  pivot_wider(names_from = dificultad, values_from = tiempo) %>%
-  drop_na(Baja, Media, Alta)
-
-post_hoc_resultados <- data.frame(
-  comparacion = c("Baja vs Media", "Baja vs Alta", "Media vs Alta"),
-  p_valor = c(
-    t.test(datos_wide$Baja, datos_wide$Media, paired = TRUE)$p.value,
-    t.test(datos_wide$Baja, datos_wide$Alta, paired = TRUE)$p.value,
-    t.test(datos_wide$Media, datos_wide$Alta, paired = TRUE)$p.value
-  )
-)
-
-post_hoc_resultados$p_ajustado_Holm <- p.adjust(post_hoc_resultados$p_valor, method = "holm")
-
-post_hoc_resultados
+```{r}
+holm <- pairwise.t.test(datos_fisica[["tiempo"]], datos_fisica[["dificultad"]],
+                        p.adj= "holm", paired=TRUE, conf.level=1-0.05)
+print(holm)
 ```
 
 ## Respuesta a la pregunta planteada
@@ -245,9 +227,15 @@ Al realizar el procedimiento ANOVA de una vía para muestras correlacionadas, se
 
 Para identificar específicamente dónde radican estas diferencias, se realizó un análisis post-hoc utilizando pruebas T de Student para muestras pareadas con corrección de Holm, el cual reveló lo siguiente:
 
+Rechazamos hipótesis nula en favor de la alternativa:
 - Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Baja** ($p_{adj} < 0,001$).
 - Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Media** ($p_{adj} < 0,001$).
+
+
+No hay evidencia suficiente para rechazar la hipótesis nula.
 - No existen diferencias estadísticamente significativas en el tiempo de respuesta entre los problemas de dificultad **Media y Baja** ($p_{adj} = 0,800$).
+
+
 
 ## Conclusión
 
