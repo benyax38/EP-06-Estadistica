@@ -223,17 +223,16 @@ print(holm)
 
 ## Respuesta a la pregunta planteada
 
-Al realizar el procedimiento ANOVA de una vía para muestras correlacionadas, se determinó que existen diferencias estadísticamente significativas en el tiempo que tardan los usuarios en formular consultas según el nivel de dificultad de los problemas en el área de Física ($F(2, 398) = 70,71$; $p < 0,001$).
+Al realizar el procedimiento ANOVA de una vía para muestras correlacionadas, se determinó que existen diferencias estadísticamente significativas en el tiempo que tardan los usuarios en formular consultas según el nivel de dificultad de los problemas en el área de Física ($F(2, 398) = 70,71$; $p < 0,001$). Por lo tanto, se rechaza la hipótesis nula general del ANOVA, que planteaba que los tiempos promedio eran iguales para los tres niveles de dificultad.
 
-Para identificar específicamente dónde radican estas diferencias, se realizó un análisis post-hoc utilizando pruebas T de Student para muestras pareadas con corrección de Holm, el cual reveló lo siguiente:
+Sin embargo, este resultado general solo indica que existe al menos una diferencia entre los niveles, pero no señala específicamente entre qué niveles ocurre. Por esta razón, se realizó un análisis post-hoc utilizando pruebas T de Student para muestras pareadas con corrección de Holm.
 
-Rechazamos hipótesis nula en favor de la alternativa:
+En las comparaciones post-hoc, se rechaza la hipótesis nula de igualdad para los siguientes pares:
+
 - Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Baja** ($p_{adj} < 0,001$).
 - Existe una diferencia estadísticamente significativa en el tiempo de respuesta entre los problemas de dificultad **Alta y Media** ($p_{adj} < 0,001$).
 
-
-No hay evidencia suficiente para rechazar la hipótesis nula.
-- No existen diferencias estadísticamente significativas en el tiempo de respuesta entre los problemas de dificultad **Media y Baja** ($p_{adj} = 0,800$).
+En cambio, para la comparación entre **Media y Baja**, no se encontró evidencia suficiente para rechazar la hipótesis nula de igualdad ($p_{adj} = 0,800$). Esto significa que, aunque el ANOVA general muestra que no todos los niveles tienen el mismo tiempo promedio, la diferencia se explica principalmente por el nivel de dificultad **Alta**, mientras que los tiempos promedio de **Baja** y **Media** son estadísticamente similares.
 
 
 
