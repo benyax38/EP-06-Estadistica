@@ -93,6 +93,8 @@ datos_fisica %>%
   )
 ```
 
+Descriptivamente, los tiempos promedio de dificultad Baja y Media son muy similares, mientras que el nivel Alta presenta un promedio mayor. Esto sugiere inicialmente que las posibles diferencias podrían estar asociadas principalmente a la dificultad Alta.
+
 
 
 
@@ -133,7 +135,7 @@ ggqqplot(datos_fisica, x="tiempo", y="dificultad", color="dificultad", alpha=0.7
 
 ```
 
-Podemos apreciar claramente que todos los puntos caen dentro del rango seguro.
+En los gráficos Q-Q, los puntos se ubican aproximadamente alrededor de la línea teórica en los tres niveles de dificultad. Esto sugiere que el supuesto de normalidad es razonable.
 
 ```{r}
 # Agrupar los datos
@@ -158,7 +160,7 @@ ggplot(datos_fisica, aes(x = tiempo, fill = dificultad)) +
 
 ```
 
-Para eliminar cualquier tipo de duda, podemos apreciar como los histogramas representan muy bien una distribución normal.
+Los histogramas muestran distribuciones aproximadamente simétricas, sin valores atípicos extremos evidentes. Esto es consistente con una distribución cercana a la normal.
 
 ```{r}
 normalidad_fisica <- summarise(datos_agrupados, 
@@ -209,7 +211,7 @@ Dado que el valor p es considerablemente menor al nivel de significación $\alph
 Debido a que la prueba ómnibus resultó significativa, es necesario aplicar un análisis post-hoc para identificar específicamente entre qué niveles de dificultad existen estas diferencias. Para un diseño de medidas repetidas, utilizaremos pruebas T de Student para muestras pareadas, aplicando el ajuste de Holm para controlar la tasa de falsos positivos (error de Tipo I) en comparaciones múltiples.
 
 ```{r}
-ezPlot(data = datos_fisica, dv = tiempo, wid = id, between = dificultad,
+ezPlot(data = datos_fisica, dv = tiempo, wid = id, within = dificultad,
        y_lab = "Tiempo de Resolución [s]", x = dificultad) +
   ggtitle("Tiempos Medios e Intervalos de Confianza FLSD")
 ```
@@ -238,7 +240,7 @@ En cambio, para la comparación entre **Media y Baja**, no se encontró evidenci
 
 ## Conclusión
 
-El nivel de dificultad tiene un impacto significativo en el tiempo que tardan los usuarios en formular consultas en el área de Física. Específicamente, los problemas de dificultad Alta demandan un tiempo de formulación significativamente distinto en comparación con los problemas de dificultad Baja y Media, mientras que entre estos dos últimos no se observan diferencias estadísticas relevantes en el desempeño de los participantes.
+El nivel de dificultad tiene un impacto significativo en el tiempo que tardan los usuarios en formular consultas en el área de Física. Específicamente, los problemas de dificultad Alta presentan tiempos promedio significativamente mayores que los de dificultad Baja y Media, mientras que entre estos dos últimos no se observan diferencias estadísticas relevantes en el desempeño de los participantes.
 
 # Problema 2
 
