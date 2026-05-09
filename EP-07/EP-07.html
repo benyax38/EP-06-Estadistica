@@ -3574,6 +3574,24 @@ de ser necesario.</p>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mejor.B"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"95.00","2":"98.21","_rn_":"1"},{"1":"95.60","2":"98.48","_rn_":"2"},{"1":"98.36","2":"98.26","_rn_":"3"},{"1":"94.60","2":"96.63","_rn_":"4"},{"1":"88.75","2":"90.74","_rn_":"5"},{"1":"97.38","2":"97.43","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<div id="condiciones-paramétricas-1" class="section level2">
+<h2>Condiciones paramétricas</h2>
+</div>
+<div id="selección-de-la-prueba-1" class="section level2">
+<h2>Selección de la prueba</h2>
+</div>
+<div id="formulación-de-hipótesis-1" class="section level2">
+<h2>Formulación de Hipótesis</h2>
+</div>
+<div id="condiciones-1" class="section level2">
+<h2>Condiciones</h2>
+</div>
+<div id="prueba-estadística-1" class="section level2">
+<h2>Prueba estadística</h2>
+</div>
+<div id="conclusión-1" class="section level2">
+<h2>Conclusión</h2>
+</div>
 </div>
 <div id="problema-3" class="section level1">
 <h1>Problema 3</h1>
@@ -3812,6 +3830,24 @@ NA
 </tr>
 </tbody>
 </table>
+<div id="condiciones-paramétricas-2" class="section level2">
+<h2>Condiciones paramétricas</h2>
+</div>
+<div id="selección-de-la-prueba-2" class="section level2">
+<h2>Selección de la prueba</h2>
+</div>
+<div id="formulación-de-hipótesis-2" class="section level2">
+<h2>Formulación de Hipótesis</h2>
+</div>
+<div id="condiciones-2" class="section level2">
+<h2>Condiciones</h2>
+</div>
+<div id="prueba-estadística-2" class="section level2">
+<h2>Prueba estadística</h2>
+</div>
+<div id="conclusión-2" class="section level2">
+<h2>Conclusión</h2>
+</div>
 </div>
 <div id="problema-4" class="section level1">
 <h1>Problema 4</h1>
@@ -3841,14 +3877,296 @@ necesario.</p>
 <span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a></span>
 <span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co"># Obtener muestra aleatoria de 22 instancias</span></span>
 <span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>muestra_rendimiento <span class="ot">&lt;-</span> datos_filtrados_pregunta_4 <span class="sc">%&gt;%</span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">22</span>)</span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># Verificación de la estructura</span></span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="fu">head</span>(muestra_rendimiento)</span></code></pre></div>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mejor.A"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["mejor.B"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"99.25","2":"98.60","3":"97.58","_rn_":"1"},{"1":"98.80","2":"95.24","3":"99.46","_rn_":"2"},{"1":"95.84","2":"95.10","3":"97.13","_rn_":"3"},{"1":"98.58","2":"98.01","3":"96.20","_rn_":"4"},{"1":"97.60","2":"95.10","3":"97.73","_rn_":"5"},{"1":"99.06","2":"98.02","3":"98.26","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">22</span>)</span></code></pre></div>
+<p>Mostrar los datos de la muestra:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>muestra_rendimiento <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">caption =</span> <span class="st">&quot;Muestra Aleatoria de Rendimientos (n=22 instancias)&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>      <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>      <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>), </span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>                <span class="at">full_width =</span> F)</span></code></pre></div>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Muestra Aleatoria de Rendimientos (n=22 instancias)
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+mejor.A
+</th>
+<th style="text-align:center;">
+mejor.B
+</th>
+<th style="text-align:center;">
+mejor.C
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+99.25
+</td>
+<td style="text-align:center;">
+98.60
+</td>
+<td style="text-align:center;">
+97.58
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+98.80
+</td>
+<td style="text-align:center;">
+95.24
+</td>
+<td style="text-align:center;">
+99.46
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+95.84
+</td>
+<td style="text-align:center;">
+95.10
+</td>
+<td style="text-align:center;">
+97.13
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+98.58
+</td>
+<td style="text-align:center;">
+98.01
+</td>
+<td style="text-align:center;">
+96.20
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+97.60
+</td>
+<td style="text-align:center;">
+95.10
+</td>
+<td style="text-align:center;">
+97.73
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.06
+</td>
+<td style="text-align:center;">
+98.02
+</td>
+<td style="text-align:center;">
+98.26
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.02
+</td>
+<td style="text-align:center;">
+97.16
+</td>
+<td style="text-align:center;">
+97.30
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.19
+</td>
+<td style="text-align:center;">
+97.79
+</td>
+<td style="text-align:center;">
+98.43
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+98.65
+</td>
+<td style="text-align:center;">
+97.18
+</td>
+<td style="text-align:center;">
+93.18
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+95.06
+</td>
+<td style="text-align:center;">
+93.01
+</td>
+<td style="text-align:center;">
+95.59
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.42
+</td>
+<td style="text-align:center;">
+96.36
+</td>
+<td style="text-align:center;">
+98.95
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+96.60
+</td>
+<td style="text-align:center;">
+94.17
+</td>
+<td style="text-align:center;">
+95.88
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+97.59
+</td>
+<td style="text-align:center;">
+94.40
+</td>
+<td style="text-align:center;">
+97.35
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.87
+</td>
+<td style="text-align:center;">
+95.59
+</td>
+<td style="text-align:center;">
+95.42
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+93.40
+</td>
+<td style="text-align:center;">
+92.70
+</td>
+<td style="text-align:center;">
+97.04
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+97.56
+</td>
+<td style="text-align:center;">
+92.95
+</td>
+<td style="text-align:center;">
+97.71
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.78
+</td>
+<td style="text-align:center;">
+97.70
+</td>
+<td style="text-align:center;">
+99.88
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+98.57
+</td>
+<td style="text-align:center;">
+97.50
+</td>
+<td style="text-align:center;">
+95.63
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+98.37
+</td>
+<td style="text-align:center;">
+93.58
+</td>
+<td style="text-align:center;">
+98.21
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+95.09
+</td>
+<td style="text-align:center;">
+96.32
+</td>
+<td style="text-align:center;">
+94.63
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+97.73
+</td>
+<td style="text-align:center;">
+99.84
+</td>
+<td style="text-align:center;">
+89.20
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+99.19
+</td>
+<td style="text-align:center;">
+99.15
+</td>
+<td style="text-align:center;">
+98.04
+</td>
+</tr>
+</tbody>
+</table>
+<div id="condiciones-paramétricas-3" class="section level2">
+<h2>Condiciones paramétricas</h2>
+</div>
+<div id="selección-de-la-prueba-3" class="section level2">
+<h2>Selección de la prueba</h2>
+</div>
+<div id="formulación-de-hipótesis-3" class="section level2">
+<h2>Formulación de Hipótesis</h2>
+</div>
+<div id="condiciones-3" class="section level2">
+<h2>Condiciones</h2>
+</div>
+<div id="prueba-estadística-3" class="section level2">
+<h2>Prueba estadística</h2>
+</div>
+<div id="conclusión-3" class="section level2">
+<h2>Conclusión</h2>
 </div>
 </div>
 

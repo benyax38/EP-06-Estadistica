@@ -283,9 +283,20 @@ datos_filtrados_pregunta_4 <- datos_algoritmo %>%
 # Obtener muestra aleatoria de 22 instancias
 muestra_rendimiento <- datos_filtrados_pregunta_4 %>%
   sample_n(22)
+```
 
-# Verificación de la estructura
-head(muestra_rendimiento)
+Mostrar los datos de la muestra:
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+muestra_rendimiento %>%
+  kbl(caption = "Muestra Aleatoria de Rendimientos (n=22 instancias)",
+      booktabs = TRUE,
+      align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                full_width = F)
 ```
 
 ## Condiciones paramétricas
