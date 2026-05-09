@@ -12,7 +12,7 @@
 <meta name="author" content="Equipo 1" />
 
 
-<title>EP06-Estadistica</title>
+<title>EP07-Estadistica</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -2565,6 +2565,230 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
 code{white-space: pre-wrap;}
@@ -2577,6 +2801,107 @@ ul.task-list{list-style: none;}
 
 
 
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -2738,9 +3063,9 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">EP06-Estadistica</h1>
+<h1 class="title toc-ignore">EP07-Estadistica</h1>
 <h4 class="author">Equipo 1</h4>
-<h4 class="date">06-05-2026</h4>
+<h4 class="date">09-05-2026</h4>
 
 </div>
 
@@ -2754,6 +3079,147 @@ versiones de un algoritmo genético para resolver instancias del problema
 del vendedor viajero disponibles en repositorios públicos. Ahora debe
 enfrentar el análisis de estos datos, por que está solicitando ayuda de
 las y los estudiantes de Estadística Inferencial.</p>
+</div>
+<div id="lectura-de-datos" class="section level2">
+<h2>Lectura de datos</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;EP07 Datos.csv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="descripción-de-las-variables" class="section level2">
+<h2>Descripción de las variables</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Cargar librerías necesarias</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div>
+<pre><code>## Warning: package &#39;knitr&#39; was built under R version 4.5.3</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># 1. Crear el data frame con la información técnica</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>tabla_variables <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="st">&quot;**instancia**&quot;</span>, </span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="st">&quot;**n.nodos**&quot;</span>, </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="st">&quot;**n.aristas**&quot;</span>, </span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="st">&quot;**tiempo.A / B / C**&quot;</span>, </span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="st">&quot;**mejor.A / B / C**&quot;</span>, </span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="st">&quot;**Algoritmo**&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  ),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  Clasificación <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="st">&quot;Independiente (ID)&quot;</span>, </span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    <span class="st">&quot;Independiente (Control)&quot;</span>, </span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>    <span class="st">&quot;Independiente (Control)&quot;</span>, </span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    <span class="st">&quot;Dependiente (Numérica)&quot;</span>, </span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    <span class="st">&quot;Dependiente (Desempeño)&quot;</span>, </span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="st">&quot;Factor (Independiente)&quot;</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  ),</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  Descripción <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>    <span class="st">&quot;Corresponde a las observaciones. En este caso son instancias del problema del vendedor viajero&quot;</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="st">&quot;Variable cuantitativa que indica el tamaño del grafo&quot;</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    <span class="st">&quot;Variable cuantitativa que indica la cantidad de aristas del grafo&quot;</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    <span class="st">&quot;Tiempo de ejecución (en milisegundos) que tarda cada algoritmo genético en resolver instancias del problema del vendedor viajero&quot;</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    <span class="st">&quot;Porcentaje de cercanía a la solución óptima de la mejor solución encontrada&quot;</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>    <span class="st">&quot;Tipo de algoritmo utilizado (A, B o C). Actúa como factor con 3 niveles&quot;</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  )</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>)</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># 2. Generar la tabla con kableExtra para R Markdown</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>tabla_variables <span class="sc">%&gt;%</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">caption =</span> <span class="st">&quot;Identificación y Clasificación de Variables del Dataset&quot;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>      <span class="at">booktabs =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>      <span class="at">align =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>      <span class="at">escape =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co"># escape = FALSE permite usar negritas en Markdown</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), </span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>                <span class="at">full_width =</span> F, </span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>                <span class="at">position =</span> <span class="st">&quot;center&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">border_right =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">italic =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">background =</span> <span class="st">&quot;#4E79A7&quot;</span>) <span class="co"># Encabezado con color</span></span></code></pre></div>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Identificación y Clasificación de Variables del Dataset
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: rgba(78, 121, 167, 255) !important;">
+Variable
+</th>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: rgba(78, 121, 167, 255) !important;">
+Clasificación
+</th>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: rgba(78, 121, 167, 255) !important;">
+Descripción
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>instancia</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Independiente (ID)
+</td>
+<td style="text-align:left;">
+Corresponde a las observaciones. En este caso son instancias del
+problema del vendedor viajero
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>n.nodos</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Independiente (Control)
+</td>
+<td style="text-align:left;">
+Variable cuantitativa que indica el tamaño del grafo
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>n.aristas</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Independiente (Control)
+</td>
+<td style="text-align:left;">
+Variable cuantitativa que indica la cantidad de aristas del grafo
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>tiempo.A / B / C</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Dependiente (Numérica)
+</td>
+<td style="text-align:left;">
+Tiempo de ejecución (en milisegundos) que tarda cada algoritmo genético
+en resolver instancias del problema del vendedor viajero
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>mejor.A / B / C</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Dependiente (Desempeño)
+</td>
+<td style="text-align:left;">
+Porcentaje de cercanía a la solución óptima de la mejor solución
+encontrada
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-right:1px solid;">
+<strong>Algoritmo</strong>
+</td>
+<td style="text-align:left;font-style: italic;">
+Factor (Independiente)
+</td>
+<td style="text-align:left;">
+Tipo de algoritmo utilizado (A, B o C). Actúa como factor con 3 niveles
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="problema-1" class="section level1">
 <h1>Problema 1</h1>
@@ -2773,9 +3239,6 @@ necesario.</p>
 </div>
 <div id="respuesta-1" class="section level1">
 <h1>Respuesta 1</h1>
-<div id="lectura-de-datos" class="section level2">
-<h2>Lectura de datos</h2>
-</div>
 <div id="condiciones-paramétricas" class="section level2">
 <h2>Condiciones paramétricas</h2>
 </div>
@@ -2827,6 +3290,9 @@ condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda)
 para responder la pregunta planteada, utilizando pruebas no paramétricas
 de ser necesario.</p>
 </div>
+<div id="respuesta-3" class="section level1">
+<h1>Respuesta 3</h1>
+</div>
 <div id="problema-4" class="section level1">
 <h1>Problema 4</h1>
 <p>La memorista también intuye que, al comparar las mismas instancias de
@@ -2840,6 +3306,9 @@ estadístico pertinente (enunciar hipótesis, revisar condiciones,
 seleccionar pruebas ómnibus y post-hoc según corresponda) para responder
 la pregunta planteada, utilizando pruebas no paramétricas de ser
 necesario.</p>
+</div>
+<div id="respuesta-4" class="section level1">
+<h1>Respuesta 4</h1>
 </div>
 
 

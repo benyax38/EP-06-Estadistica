@@ -1,7 +1,7 @@
 ---
-title: "EP06-Estadistica"
+title: "EP07-Estadistica"
 author: "Equipo 1"
-date: "06-05-2026"
+date: "09-05-2026"
 output:
   html_document:
     toc: true # Activa la tabla de contenidos (índice)
@@ -27,6 +27,61 @@ knitr::opts_chunk$set(
 
 En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
 
+## Lectura de datos
+
+```{r}
+datos <- read.csv("EP07 Datos.csv")
+```
+
+## Descripción de las variables
+
+```{r}
+# Cargar librerías necesarias
+library(knitr)
+library(kableExtra)
+
+# 1. Crear el data frame con la información técnica
+tabla_variables <- data.frame(
+  Variable = c(
+    "**instancia**", 
+    "**n.nodos**", 
+    "**n.aristas**", 
+    "**tiempo.A / B / C**", 
+    "**mejor.A / B / C**", 
+    "**Algoritmo**"
+  ),
+  Clasificación = c(
+    "Independiente (ID)", 
+    "Independiente (Control)", 
+    "Independiente (Control)", 
+    "Dependiente (Numérica)", 
+    "Dependiente (Desempeño)", 
+    "Factor (Independiente)"
+  ),
+  Descripción = c(
+    "Corresponde a las observaciones. En este caso son instancias del problema del vendedor viajero",
+    "Variable cuantitativa que indica el tamaño del grafo",
+    "Variable cuantitativa que indica la cantidad de aristas del grafo",
+    "Tiempo de ejecución (en milisegundos) que tarda cada algoritmo genético en resolver instancias del problema del vendedor viajero",
+    "Porcentaje de cercanía a la solución óptima de la mejor solución encontrada",
+    "Tipo de algoritmo utilizado (A, B o C). Actúa como factor con 3 niveles"
+  )
+)
+
+# 2. Generar la tabla con kableExtra para R Markdown
+tabla_variables %>%
+  kbl(caption = "Identificación y Clasificación de Variables del Dataset",
+      booktabs = TRUE, 
+      align = "l",
+      escape = FALSE) %>% # escape = FALSE permite usar negritas en Markdown
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F, 
+                position = "center") %>%
+  column_spec(1, bold = TRUE, border_right = TRUE) %>%
+  column_spec(2, italic = TRUE) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4E79A7") # Encabezado con color
+```
+
 # Problema 1
 
 Observando los datos, la memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos. ¿Los datos respaldan la intuición de la memorista?
@@ -34,7 +89,6 @@ Para responder, filtren los datos para tener las instancias con 70 o más nodos 
 
 # Respuesta 1
 
-## Lectura de datos
 
 ## Condiciones paramétricas
 
