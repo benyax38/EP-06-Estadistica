@@ -2841,38 +2841,39 @@ color: #aaaaaa;
 }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-{ background-color: #f8f8f8; }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ef2929; } 
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.at { color: #204a87; } 
-code span.bn { color: #0000cf; } 
-code span.cf { color: #204a87; font-weight: bold; } 
-code span.ch { color: #4e9a06; } 
-code span.cn { color: #8f5902; } 
-code span.co { color: #8f5902; font-style: italic; } 
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.dt { color: #204a87; } 
-code span.dv { color: #0000cf; } 
-code span.er { color: #a40000; font-weight: bold; } 
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
 code span.ex { } 
-code span.fl { color: #0000cf; } 
-code span.fu { color: #204a87; font-weight: bold; } 
-code span.im { } 
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.kw { color: #204a87; font-weight: bold; } 
-code span.op { color: #ce5c00; font-weight: bold; } 
-code span.ot { color: #8f5902; } 
-code span.pp { color: #8f5902; font-style: italic; } 
-code span.sc { color: #ce5c00; font-weight: bold; } 
-code span.ss { color: #4e9a06; } 
-code span.st { color: #4e9a06; } 
-code span.va { color: #000000; } 
-code span.vs { color: #4e9a06; } 
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -3081,9 +3082,9 @@ enfrentar el análisis de estos datos, por que está solicitando ayuda de
 las y los estudiantes de Estadística Inferencial.</p>
 <div id="lectura-de-datos" class="section level2">
 <h2>Lectura de datos</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>datos_algoritmos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;EP07 Datos.csv&quot;</span>)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>datos_algoritmo <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;EP07 Datos.csv&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">head</span>(datos_algoritmos)</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">head</span>(datos_algoritmo)</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["instancia"],"name":[1],"type":["int"],"align":["right"]},{"label":["n.nodos"],"name":[2],"type":["int"],"align":["right"]},{"label":["n.aristas"],"name":[3],"type":["int"],"align":["right"]},{"label":["tiempo.A"],"name":[4],"type":["int"],"align":["right"]},{"label":["tiempo.B"],"name":[5],"type":["int"],"align":["right"]},{"label":["tiempo.C"],"name":[6],"type":["int"],"align":["right"]},{"label":["mejor.A"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["mejor.B"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"50","3":"631","4":"107534","5":"452595","6":"257485","7":"98.72","8":"98.25","9":"99.34","_rn_":"1"},{"1":"2","2":"50","3":"521","4":"74808","5":"364061","6":"207297","7":"98.99","8":"99.17","9":"99.48","_rn_":"2"},{"1":"3","2":"50","3":"588","4":"94072","5":"417798","6":"237793","7":"99.10","8":"99.23","9":"99.10","_rn_":"3"},{"1":"4","2":"50","3":"653","4":"114830","5":"470701","6":"267598","7":"98.69","8":"99.23","9":"97.82","_rn_":"4"},{"1":"5","2":"50","3":"597","4":"96720","5":"425233","6":"241770","7":"99.80","8":"99.22","9":"98.14","_rn_":"5"},{"1":"6","2":"50","3":"564","4":"86688","5":"398448","6":"226833","7":"99.19","8":"99.15","9":"98.04","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3232,19 +3233,19 @@ Tipo de algoritmo utilizado (A, B o C). Actúa como factor con 3 niveles
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.5.3</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Pivoteo múltiple: manejamos tiempo y mejor desempeño a la vez</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>datos_largos <span class="ot">&lt;-</span> datos_algoritmos <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>datos_largos <span class="ot">&lt;-</span> datos_algoritmo <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="fu">starts_with</span>(<span class="st">&quot;tiempo.&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;mejor.&quot;</span>)), </span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;.value&quot;</span>, <span class="st">&quot;Algoritmo&quot;</span>), </span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;.value&quot;</span>, <span class="st">&quot;Version_alg&quot;</span>), </span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span></span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Algoritmo =</span> <span class="fu">as.factor</span>(Algoritmo))</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Version_alg =</span> <span class="fu">as.factor</span>(Version_alg))</span>
 <span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
 <span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co"># El resultado tendrá columnas: instancia, n.nodos, n.aristas, Algoritmo, tiempo, mejor</span></span>
 <span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">head</span>(datos_largos)</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["instancia"],"name":[1],"type":["int"],"align":["right"]},{"label":["n.nodos"],"name":[2],"type":["int"],"align":["right"]},{"label":["n.aristas"],"name":[3],"type":["int"],"align":["right"]},{"label":["Algoritmo"],"name":[4],"type":["fct"],"align":["left"]},{"label":["tiempo"],"name":[5],"type":["int"],"align":["right"]},{"label":["mejor"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"50","3":"631","4":"A","5":"107534","6":"98.72"},{"1":"1","2":"50","3":"631","4":"B","5":"452595","6":"98.25"},{"1":"1","2":"50","3":"631","4":"C","5":"257485","6":"99.34"},{"1":"2","2":"50","3":"521","4":"A","5":"74808","6":"98.99"},{"1":"2","2":"50","3":"521","4":"B","5":"364061","6":"99.17"},{"1":"2","2":"50","3":"521","4":"C","5":"207297","6":"99.48"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["instancia"],"name":[1],"type":["int"],"align":["right"]},{"label":["n.nodos"],"name":[2],"type":["int"],"align":["right"]},{"label":["n.aristas"],"name":[3],"type":["int"],"align":["right"]},{"label":["Version_alg"],"name":[4],"type":["fct"],"align":["left"]},{"label":["tiempo"],"name":[5],"type":["int"],"align":["right"]},{"label":["mejor"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"50","3":"631","4":"A","5":"107534","6":"98.72"},{"1":"1","2":"50","3":"631","4":"B","5":"452595","6":"98.25"},{"1":"1","2":"50","3":"631","4":"C","5":"257485","6":"99.34"},{"1":"2","2":"50","3":"521","4":"A","5":"74808","6":"98.99"},{"1":"2","2":"50","3":"521","4":"B","5":"364061","6":"99.17"},{"1":"2","2":"50","3":"521","4":"C","5":"207297","6":"99.48"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -3267,6 +3268,259 @@ necesario.</p>
 </div>
 <div id="respuesta-1" class="section level1">
 <h1>Respuesta 1</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co"># Fijar semilla para reproducibilidad</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">73</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co"># Filtrar instancias y seleccionar columnas en formato ancho</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>datos_filtrados_pregunta_1 <span class="ot">&lt;-</span> datos_algoritmo <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">filter</span>(n.nodos <span class="sc">&gt;=</span> <span class="dv">70</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">select</span>(tiempo.A, tiempo.B)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co"># Obtener muestras aleatorias independientes</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>muestra_A_P1 <span class="ot">&lt;-</span> <span class="fu">sample</span>(datos_filtrados_pregunta_1<span class="sc">$</span>tiempo.A, <span class="dv">24</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>muestra_B_P1 <span class="ot">&lt;-</span> <span class="fu">sample</span>(datos_filtrados_pregunta_1<span class="sc">$</span>tiempo.B, <span class="dv">20</span>)</span></code></pre></div>
+<p>Mostrar tabla con las muestras:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co"># Como tienen tamaños distintos, creamos una lista o un data frame con NAs para visualización</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>max_n <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">length</span>(muestra_A_P1), <span class="fu">length</span>(muestra_B_P1))</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>tabla_muestras_P1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="st">`</span><span class="at">Tiempo Algoritmo A</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(muestra_A_P1, <span class="fu">rep</span>(<span class="cn">NA</span>, max_n <span class="sc">-</span> <span class="fu">length</span>(muestra_A_P1))),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">Tiempo Algoritmo B</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(muestra_B_P1, <span class="fu">rep</span>(<span class="cn">NA</span>, max_n <span class="sc">-</span> <span class="fu">length</span>(muestra_B_P1)))</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co"># Generar la tabla</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>tabla_muestras_P1 <span class="sc">%&gt;%</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">caption =</span> <span class="st">&quot;Muestras Aleatorias Independientes de Tiempos de Ejecución&quot;</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>      <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>      <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), </span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>                <span class="at">full_width =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot;Versión A (n=24)&quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Versión B (n=20)&quot;</span> <span class="ot">=</span> <span class="dv">1</span>))</span></code></pre></div>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Muestras Aleatorias Independientes de Tiempos de Ejecución
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Versión A (n=24)
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Versión B (n=20)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+Tiempo.Algoritmo.A
+</th>
+<th style="text-align:center;">
+Tiempo.Algoritmo.B
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+1787996
+</td>
+<td style="text-align:center;">
+1369662
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1773924
+</td>
+<td style="text-align:center;">
+3269943
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2318669
+</td>
+<td style="text-align:center;">
+2630575
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2863814
+</td>
+<td style="text-align:center;">
+3404616
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+454851
+</td>
+<td style="text-align:center;">
+855320
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+984006
+</td>
+<td style="text-align:center;">
+1727670
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+313221
+</td>
+<td style="text-align:center;">
+3155503
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+334128
+</td>
+<td style="text-align:center;">
+2918597
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2353874
+</td>
+<td style="text-align:center;">
+1965678
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+3484273
+</td>
+<td style="text-align:center;">
+1406599
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2052909
+</td>
+<td style="text-align:center;">
+1696931
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+589858
+</td>
+<td style="text-align:center;">
+2029282
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+467360
+</td>
+<td style="text-align:center;">
+1911543
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5598163
+</td>
+<td style="text-align:center;">
+1348357
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+866889
+</td>
+<td style="text-align:center;">
+1088460
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1745691
+</td>
+<td style="text-align:center;">
+1992182
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+319406
+</td>
+<td style="text-align:center;">
+1850743
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2176449
+</td>
+<td style="text-align:center;">
+1048648
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+408354
+</td>
+<td style="text-align:center;">
+1357717
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+479164
+</td>
+<td style="text-align:center;">
+2898259
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+382143
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2586617
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1166026
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1176876
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 <div id="condiciones-paramétricas" class="section level2">
 <h2>Condiciones paramétricas</h2>
 </div>
@@ -3302,6 +3556,24 @@ de ser necesario.</p>
 </div>
 <div id="respuesta-2" class="section level1">
 <h1>Respuesta 2</h1>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co"># Fijar semilla para reproducibilidad</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">71</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># Filtrar por nodos, seleccionar columnas de rendimiento y obtener muestra</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>datos_filtrados_pregunta_2 <span class="ot">&lt;-</span> datos_algoritmo <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="fu">filter</span>(n.nodos <span class="sc">&gt;=</span> <span class="dv">70</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="fu">select</span>(mejor.B, mejor.C) <span class="sc">%&gt;%</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">24</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co"># Visualizar la muestra (formato ancho)</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="fu">head</span>(datos_filtrados_pregunta_2)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mejor.B"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"95.00","2":"98.21","_rn_":"1"},{"1":"95.60","2":"98.48","_rn_":"2"},{"1":"98.36","2":"98.26","_rn_":"3"},{"1":"94.60","2":"96.63","_rn_":"4"},{"1":"88.75","2":"90.74","_rn_":"5"},{"1":"97.38","2":"97.43","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 <div id="problema-3" class="section level1">
 <h1>Problema 3</h1>
@@ -3320,6 +3592,226 @@ de ser necesario.</p>
 </div>
 <div id="respuesta-3" class="section level1">
 <h1>Respuesta 3</h1>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># Fijar semilla para asegurar la reproducibilidad</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">31</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co"># Filtrar instancias con 50 o más nodos y seleccionar columnas de tiempo</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>datos_filtrados_pregunta_3 <span class="ot">&lt;-</span> datos_algoritmo <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">filter</span>(n.nodos <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="fu">select</span>(tiempo.A, tiempo.B, tiempo.C)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co"># Obtener muestras aleatorias independientes (tamaños: 14, 12 y 13)</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>muestra_A_P3 <span class="ot">&lt;-</span> <span class="fu">sample</span>(datos_filtrados_pregunta_3<span class="sc">$</span>tiempo.A, <span class="dv">14</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>muestra_B_P3 <span class="ot">&lt;-</span> <span class="fu">sample</span>(datos_filtrados_pregunta_3<span class="sc">$</span>tiempo.B, <span class="dv">12</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>muestra_C_P3 <span class="ot">&lt;-</span> <span class="fu">sample</span>(datos_filtrados_pregunta_3<span class="sc">$</span>tiempo.C, <span class="dv">13</span>)</span></code></pre></div>
+<p>Mostrar las muestras obtenidas:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co"># Determinar el tamaño máximo para nivelar las columnas</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>max_n <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">length</span>(muestra_A_P3), <span class="fu">length</span>(muestra_B_P3), <span class="fu">length</span>(muestra_C_P3))</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Crear un data frame unificado rellenando con NA donde falten datos</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>tabla_muestras_P3 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="at">Algoritmo_A =</span> <span class="fu">c</span>(muestra_A_P3, <span class="fu">rep</span>(<span class="cn">NA</span>, max_n <span class="sc">-</span> <span class="fu">length</span>(muestra_A_P3))),</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="at">Algoritmo_B =</span> <span class="fu">c</span>(muestra_B_P3, <span class="fu">rep</span>(<span class="cn">NA</span>, max_n <span class="sc">-</span> <span class="fu">length</span>(muestra_B_P3))),</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="at">Algoritmo_C =</span> <span class="fu">c</span>(muestra_C_P3, <span class="fu">rep</span>(<span class="cn">NA</span>, max_n <span class="sc">-</span> <span class="fu">length</span>(muestra_C_P3)))</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co"># Generar la tabla</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>tabla_muestras_P3 <span class="sc">%&gt;%</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">caption =</span> <span class="st">&quot;Muestras Aleatorias Independientes de Tiempos de Ejecución (n=14, 12, 13)&quot;</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>      <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>      <span class="at">align =</span> <span class="st">&quot;c&quot;</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Versión A&quot;</span>, <span class="st">&quot;Versión B&quot;</span>, <span class="st">&quot;Versión C&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), </span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>                <span class="at">full_width =</span> F,</span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>                <span class="at">position =</span> <span class="st">&quot;center&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>  <span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot;Tiempos Registrados (ms)&quot;</span> <span class="ot">=</span> <span class="dv">3</span>))</span></code></pre></div>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Muestras Aleatorias Independientes de Tiempos de Ejecución (n=14, 12,
+13)
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Tiempos Registrados (ms)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+Versión A
+</th>
+<th style="text-align:center;">
+Versión B
+</th>
+<th style="text-align:center;">
+Versión C
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+398278
+</td>
+<td style="text-align:center;">
+3595410
+</td>
+<td style="text-align:center;">
+2133500
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+694845
+</td>
+<td style="text-align:center;">
+2453589
+</td>
+<td style="text-align:center;">
+1676428
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+3307370
+</td>
+<td style="text-align:center;">
+421852
+</td>
+<td style="text-align:center;">
+451458
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+318794
+</td>
+<td style="text-align:center;">
+1174722
+</td>
+<td style="text-align:center;">
+1561804
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+453516
+</td>
+<td style="text-align:center;">
+2249226
+</td>
+<td style="text-align:center;">
+592528
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+205476
+</td>
+<td style="text-align:center;">
+2660914
+</td>
+<td style="text-align:center;">
+1484462
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+717980
+</td>
+<td style="text-align:center;">
+1046482
+</td>
+<td style="text-align:center;">
+1255338
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+131095
+</td>
+<td style="text-align:center;">
+398448
+</td>
+<td style="text-align:center;">
+337776
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2176449
+</td>
+<td style="text-align:center;">
+1366115
+</td>
+<td style="text-align:center;">
+484734
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4119227
+</td>
+<td style="text-align:center;">
+3235980
+</td>
+<td style="text-align:center;">
+1437173
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+343080
+</td>
+<td style="text-align:center;">
+1840875
+</td>
+<td style="text-align:center;">
+281613
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2423249
+</td>
+<td style="text-align:center;">
+1791186
+</td>
+<td style="text-align:center;">
+1906000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1307970
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1869008
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2571876
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="problema-4" class="section level1">
 <h1>Problema 4</h1>
@@ -3337,6 +3829,27 @@ necesario.</p>
 </div>
 <div id="respuesta-4" class="section level1">
 <h1>Respuesta 4</h1>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co"># Fijar semilla para asegurar la reproducibilidad</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">31</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># Filtrar instancias y seleccionar columnas de mejor rendimiento</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>datos_filtrados_pregunta_4 <span class="ot">&lt;-</span> datos_algoritmo <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="fu">filter</span>(n.nodos <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  <span class="fu">select</span>(mejor.A, mejor.B, mejor.C)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co"># Obtener muestra aleatoria de 22 instancias</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>muestra_rendimiento <span class="ot">&lt;-</span> datos_filtrados_pregunta_4 <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">22</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># Verificación de la estructura</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="fu">head</span>(muestra_rendimiento)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mejor.A"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["mejor.B"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"99.25","2":"98.60","3":"97.58","_rn_":"1"},{"1":"98.80","2":"95.24","3":"99.46","_rn_":"2"},{"1":"95.84","2":"95.10","3":"97.13","_rn_":"3"},{"1":"98.58","2":"98.01","3":"96.20","_rn_":"4"},{"1":"97.60","2":"95.10","3":"97.73","_rn_":"5"},{"1":"99.06","2":"98.02","3":"98.26","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 
 

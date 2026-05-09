@@ -8,7 +8,7 @@ output:
     toc_float: true # Permite que el índice se mueva al hacer scroll
     toc_depth: 3 # Define la cantidad de niveles de títulos
     theme: flatly # Tema visual (bootstrap)
-    highlight: tango # Define el estilo del código (colores)
+    highlight: pygments # Define el estilo del código (colores)
     df_print: paged # Hace paginado al mostrar data frames
 ---
 
@@ -30,9 +30,9 @@ En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejec
 ## Lectura de datos
 
 ```{r}
-datos_algoritmos <- read.csv("EP07 Datos.csv")
+datos_algoritmo <- read.csv("EP07 Datos.csv")
 
-head(datos_algoritmos)
+head(datos_algoritmo)
 ```
 
 ## Descripción de las variables
@@ -90,13 +90,13 @@ library(tidyr)
 library(dplyr)
 
 # Pivoteo múltiple: manejamos tiempo y mejor desempeño a la vez
-datos_largos <- datos_algoritmos %>%
+datos_largos <- datos_algoritmo %>%
   pivot_longer(
     cols = c(starts_with("tiempo."), starts_with("mejor.")), 
-    names_to = c(".value", "Algoritmo"), 
+    names_to = c(".value", "Version_alg"), 
     names_sep = "\\."
   ) %>%
-  mutate(Algoritmo = as.factor(Algoritmo))
+  mutate(Version_alg = as.factor(Version_alg))
 
 # El resultado tendrá columnas: instancia, n.nodos, n.aristas, Algoritmo, tiempo, mejor
 head(datos_largos)
@@ -109,6 +109,45 @@ Observando los datos, la memorista sospecha que hay diferencias significativas e
 Para responder, filtren los datos para tener las instancias con 70 o más nodos y seleccionen las columnas de los tiempos de ejecución de las versiones A y B (en formato ancho). Usando como semilla el valor 73, obtengan muestras aleatorias independientes de 24 tiempos registrados por la versión A y 20 tiempos registrados por la versión B del algoritmo. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 # Respuesta 1
+
+```{r}
+library(dplyr)
+
+# Fijar semilla para reproducibilidad
+set.seed(73)
+
+# Filtrar instancias y seleccionar columnas en formato ancho
+datos_filtrados_pregunta_1 <- datos_algoritmo %>%
+  filter(n.nodos >= 70) %>%
+  select(tiempo.A, tiempo.B)
+
+# Obtener muestras aleatorias independientes
+muestra_A_P1 <- sample(datos_filtrados_pregunta_1$tiempo.A, 24)
+muestra_B_P1 <- sample(datos_filtrados_pregunta_1$tiempo.B, 20)
+```
+
+Mostrar tabla con las muestras:
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+# Como tienen tamaños distintos, creamos una lista o un data frame con NAs para visualización
+max_n <- max(length(muestra_A_P1), length(muestra_B_P1))
+tabla_muestras_P1 <- data.frame(
+  `Tiempo Algoritmo A` = c(muestra_A_P1, rep(NA, max_n - length(muestra_A_P1))),
+  `Tiempo Algoritmo B` = c(muestra_B_P1, rep(NA, max_n - length(muestra_B_P1)))
+)
+
+# Generar la tabla
+tabla_muestras_P1 %>%
+  kbl(caption = "Muestras Aleatorias Independientes de Tiempos de Ejecución",
+      booktabs = TRUE,
+      align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F) %>%
+  add_header_above(c("Versión A (n=24)" = 1, "Versión B (n=20)" = 1))
+```
 
 
 ## Condiciones paramétricas
@@ -131,12 +170,97 @@ Para responder, filtren los datos para tener las instancias con 70 o más nodos 
 
 # Respuesta 2
 
+```{r}
+library(dplyr)
+
+# Fijar semilla para reproducibilidad
+set.seed(71)
+
+# Filtrar por nodos, seleccionar columnas de rendimiento y obtener muestra
+datos_filtrados_pregunta_2 <- datos_algoritmo %>%
+  filter(n.nodos >= 70) %>%
+  select(mejor.B, mejor.C) %>%
+  sample_n(24)
+
+# Visualizar la muestra (formato ancho)
+head(datos_filtrados_pregunta_2)
+```
+
+## Condiciones paramétricas
+
+## Selección de la prueba
+
+## Formulación de Hipótesis
+
+## Condiciones
+
+## Prueba estadística
+
+## Conclusión
+
 # Problema 3
 
 La memorista además cree que hay diferencias significativas en el tiempo de ejecución entre las diferentes versiones del algoritmo cuando las instancias de prueba tienen 50 o más nodos. ¿Los datos respaldan la intuición de la memorista?
 Para responder, filtren los datos para tener las instancias con 50 o más nodos y seleccionen las columnas con los tiempos de ejecución registrados (en formato ancho). Usando como semilla el valor 31, obtengan muestras aleatorias independientes de 14, 12 y 13 tiempos registrados por las versiones A, B y C, respectivamente. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
 
 # Respuesta 3
+
+```{r}
+library(dplyr)
+
+# Fijar semilla para asegurar la reproducibilidad
+set.seed(31)
+
+# Filtrar instancias con 50 o más nodos y seleccionar columnas de tiempo
+datos_filtrados_pregunta_3 <- datos_algoritmo %>%
+  filter(n.nodos >= 50) %>%
+  select(tiempo.A, tiempo.B, tiempo.C)
+
+# Obtener muestras aleatorias independientes (tamaños: 14, 12 y 13)
+muestra_A_P3 <- sample(datos_filtrados_pregunta_3$tiempo.A, 14)
+muestra_B_P3 <- sample(datos_filtrados_pregunta_3$tiempo.B, 12)
+muestra_C_P3 <- sample(datos_filtrados_pregunta_3$tiempo.C, 13)
+```
+
+Mostrar las muestras obtenidas:
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+# Determinar el tamaño máximo para nivelar las columnas
+max_n <- max(length(muestra_A_P3), length(muestra_B_P3), length(muestra_C_P3))
+
+# Crear un data frame unificado rellenando con NA donde falten datos
+tabla_muestras_P3 <- data.frame(
+  Algoritmo_A = c(muestra_A_P3, rep(NA, max_n - length(muestra_A_P3))),
+  Algoritmo_B = c(muestra_B_P3, rep(NA, max_n - length(muestra_B_P3))),
+  Algoritmo_C = c(muestra_C_P3, rep(NA, max_n - length(muestra_C_P3)))
+)
+
+# Generar la tabla
+tabla_muestras_P3 %>%
+  kbl(caption = "Muestras Aleatorias Independientes de Tiempos de Ejecución (n=14, 12, 13)",
+      booktabs = TRUE,
+      align = "c",
+      col.names = c("Versión A", "Versión B", "Versión C")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F,
+                position = "center") %>%
+  add_header_above(c("Tiempos Registrados (ms)" = 3))
+```
+
+## Condiciones paramétricas
+
+## Selección de la prueba
+
+## Formulación de Hipótesis
+
+## Condiciones
+
+## Prueba estadística
+
+## Conclusión
 
 # Problema 4
 
@@ -145,3 +269,33 @@ Para responder, filtren los datos para tener las instancias con 50 o más nodos 
 
 # Respuesta 4
 
+```{r}
+library(dplyr)
+
+# Fijar semilla para asegurar la reproducibilidad
+set.seed(31)
+
+# Filtrar instancias y seleccionar columnas de mejor rendimiento
+datos_filtrados_pregunta_4 <- datos_algoritmo %>%
+  filter(n.nodos >= 50) %>%
+  select(mejor.A, mejor.B, mejor.C)
+
+# Obtener muestra aleatoria de 22 instancias
+muestra_rendimiento <- datos_filtrados_pregunta_4 %>%
+  sample_n(22)
+
+# Verificación de la estructura
+head(muestra_rendimiento)
+```
+
+## Condiciones paramétricas
+
+## Selección de la prueba
+
+## Formulación de Hipótesis
+
+## Condiciones
+
+## Prueba estadística
+
+## Conclusión
