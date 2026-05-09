@@ -3070,8 +3070,8 @@ border-radius: 0px;
 </div>
 
 
-<div id="contexto" class="section level2">
-<h2>Contexto</h2>
+<div id="contexto" class="section level1">
+<h1>Contexto</h1>
 <p>En el trabajo de título de una estudiante del DIINF se reportan
 tiempos de ejecución (en milisegundos) y la cercanía con la solución
 óptima (en por ciento) de la mejor solución encontrada con tres
@@ -3079,19 +3079,24 @@ versiones de un algoritmo genético para resolver instancias del problema
 del vendedor viajero disponibles en repositorios públicos. Ahora debe
 enfrentar el análisis de estos datos, por que está solicitando ayuda de
 las y los estudiantes de Estadística Inferencial.</p>
-</div>
 <div id="lectura-de-datos" class="section level2">
 <h2>Lectura de datos</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;EP07 Datos.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>datos_algoritmos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;EP07 Datos.csv&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">head</span>(datos_algoritmos)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["instancia"],"name":[1],"type":["int"],"align":["right"]},{"label":["n.nodos"],"name":[2],"type":["int"],"align":["right"]},{"label":["n.aristas"],"name":[3],"type":["int"],"align":["right"]},{"label":["tiempo.A"],"name":[4],"type":["int"],"align":["right"]},{"label":["tiempo.B"],"name":[5],"type":["int"],"align":["right"]},{"label":["tiempo.C"],"name":[6],"type":["int"],"align":["right"]},{"label":["mejor.A"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["mejor.B"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["mejor.C"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"50","3":"631","4":"107534","5":"452595","6":"257485","7":"98.72","8":"98.25","9":"99.34","_rn_":"1"},{"1":"2","2":"50","3":"521","4":"74808","5":"364061","6":"207297","7":"98.99","8":"99.17","9":"99.48","_rn_":"2"},{"1":"3","2":"50","3":"588","4":"94072","5":"417798","6":"237793","7":"99.10","8":"99.23","9":"99.10","_rn_":"3"},{"1":"4","2":"50","3":"653","4":"114830","5":"470701","6":"267598","7":"98.69","8":"99.23","9":"97.82","_rn_":"4"},{"1":"5","2":"50","3":"597","4":"96720","5":"425233","6":"241770","7":"99.80","8":"99.22","9":"98.14","_rn_":"5"},{"1":"6","2":"50","3":"564","4":"86688","5":"398448","6":"226833","7":"99.19","8":"99.15","9":"98.04","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 <div id="descripción-de-las-variables" class="section level2">
 <h2>Descripción de las variables</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Cargar librerías necesarias</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div>
 <pre><code>## Warning: package &#39;knitr&#39; was built under R version 4.5.3</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># 1. Crear el data frame con la información técnica</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Crear el data frame con la información técnica</span></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>tabla_variables <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="st">&quot;**instancia**&quot;</span>, </span>
@@ -3119,7 +3124,7 @@ las y los estudiantes de Estadística Inferencial.</p>
 <span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  )</span>
 <span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>)</span>
 <span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># 2. Generar la tabla con kableExtra para R Markdown</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># Generar la tabla con kableExtra para R Markdown</span></span>
 <span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>tabla_variables <span class="sc">%&gt;%</span></span>
 <span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">caption =</span> <span class="st">&quot;Identificación y Clasificación de Variables del Dataset&quot;</span>,</span>
 <span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>      <span class="at">booktabs =</span> <span class="cn">TRUE</span>, </span>
@@ -3220,6 +3225,29 @@ Tipo de algoritmo utilizado (A, B o C). Actúa como factor con 3 niveles
 </tr>
 </tbody>
 </table>
+</div>
+<div id="transformar-datos" class="section level2">
+<h2>Transformar datos</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.5.3</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Pivoteo múltiple: manejamos tiempo y mejor desempeño a la vez</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>datos_largos <span class="ot">&lt;-</span> datos_algoritmos <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="fu">starts_with</span>(<span class="st">&quot;tiempo.&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;mejor.&quot;</span>)), </span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;.value&quot;</span>, <span class="st">&quot;Algoritmo&quot;</span>), </span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Algoritmo =</span> <span class="fu">as.factor</span>(Algoritmo))</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co"># El resultado tendrá columnas: instancia, n.nodos, n.aristas, Algoritmo, tiempo, mejor</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">head</span>(datos_largos)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["instancia"],"name":[1],"type":["int"],"align":["right"]},{"label":["n.nodos"],"name":[2],"type":["int"],"align":["right"]},{"label":["n.aristas"],"name":[3],"type":["int"],"align":["right"]},{"label":["Algoritmo"],"name":[4],"type":["fct"],"align":["left"]},{"label":["tiempo"],"name":[5],"type":["int"],"align":["right"]},{"label":["mejor"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"50","3":"631","4":"A","5":"107534","6":"98.72"},{"1":"1","2":"50","3":"631","4":"B","5":"452595","6":"98.25"},{"1":"1","2":"50","3":"631","4":"C","5":"257485","6":"99.34"},{"1":"2","2":"50","3":"521","4":"A","5":"74808","6":"98.99"},{"1":"2","2":"50","3":"521","4":"B","5":"364061","6":"99.17"},{"1":"2","2":"50","3":"521","4":"C","5":"207297","6":"99.48"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 <div id="problema-1" class="section level1">
 <h1>Problema 1</h1>

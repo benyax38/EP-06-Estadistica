@@ -23,24 +23,25 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Contexto
+# Contexto
 
 En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
 
 ## Lectura de datos
 
 ```{r}
-datos <- read.csv("EP07 Datos.csv")
+datos_algoritmos <- read.csv("EP07 Datos.csv")
+
+head(datos_algoritmos)
 ```
 
 ## Descripción de las variables
 
 ```{r}
-# Cargar librerías necesarias
 library(knitr)
 library(kableExtra)
 
-# 1. Crear el data frame con la información técnica
+# Crear el data frame con la información técnica
 tabla_variables <- data.frame(
   Variable = c(
     "**instancia**", 
@@ -68,7 +69,7 @@ tabla_variables <- data.frame(
   )
 )
 
-# 2. Generar la tabla con kableExtra para R Markdown
+# Generar la tabla con kableExtra para R Markdown
 tabla_variables %>%
   kbl(caption = "Identificación y Clasificación de Variables del Dataset",
       booktabs = TRUE, 
@@ -81,6 +82,26 @@ tabla_variables %>%
   column_spec(2, italic = TRUE) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#4E79A7") # Encabezado con color
 ```
+
+## Transformar datos
+
+```{r}
+library(tidyr)
+library(dplyr)
+
+# Pivoteo múltiple: manejamos tiempo y mejor desempeño a la vez
+datos_largos <- datos_algoritmos %>%
+  pivot_longer(
+    cols = c(starts_with("tiempo."), starts_with("mejor.")), 
+    names_to = c(".value", "Algoritmo"), 
+    names_sep = "\\."
+  ) %>%
+  mutate(Algoritmo = as.factor(Algoritmo))
+
+# El resultado tendrá columnas: instancia, n.nodos, n.aristas, Algoritmo, tiempo, mejor
+head(datos_largos)
+```
+
 
 # Problema 1
 
