@@ -1,0 +1,72 @@
+---
+title: "EP06-Estadistica"
+author: "Equipo 1"
+date: "06-05-2026"
+output:
+  html_document:
+    toc: true # Activa la tabla de contenidos (índice)
+    toc_float: true # Permite que el índice se mueva al hacer scroll
+    toc_depth: 3 # Define la cantidad de niveles de títulos
+    theme: flatly # Tema visual (bootstrap)
+    highlight: tango # Define el estilo del código (colores)
+    df_print: paged # Hace paginado al mostrar data frames
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo      = TRUE, # Muestra código R en el documento
+  # warning   = FALSE, # Oculta advertencias
+  message   = FALSE, # Oculta mensajes (como los de carga de paquetes)
+  fig.align = "center", # Centra imágenes
+  fig.width = 7,
+  fig.height = 4 # Parámetros para el tamaño de gráficas
+)
+```
+
+## Contexto
+
+En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
+
+# Problema 1
+
+Observando los datos, la memorista sospecha que hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos. ¿Los datos respaldan la intuición de la memorista?
+Para responder, filtren los datos para tener las instancias con 70 o más nodos y seleccionen las columnas de los tiempos de ejecución de las versiones A y B (en formato ancho). Usando como semilla el valor 73, obtengan muestras aleatorias independientes de 24 tiempos registrados por la versión A y 20 tiempos registrados por la versión B del algoritmo. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+# Respuesta 1
+
+## Lectura de datos
+
+## Condiciones paramétricas
+
+## Selección de la prueba
+
+## Formulación de Hipótesis
+
+## Condiciones
+
+## Prueba estadística
+
+## Conclusión
+
+
+# Problema 2
+
+La memorista también sospecha que, al comparar las mismas instancias de prueba con iguales características, las mejores soluciones encontradas por las versiones B y C tienen rendimientos distintos. ¿Estará en lo cierto?
+Para responder, filtren los datos para tener las instancias con 70 o más nodos y seleccionen las columnas con el mejor rendimiento de las versiones B y C en formato ancho. Usando como semilla el valor 71, obtengan una muestra aleatoria de 24 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+# Respuesta 2
+
+# Problema 3
+
+La memorista además cree que hay diferencias significativas en el tiempo de ejecución entre las diferentes versiones del algoritmo cuando las instancias de prueba tienen 50 o más nodos. ¿Los datos respaldan la intuición de la memorista?
+Para responder, filtren los datos para tener las instancias con 50 o más nodos y seleccionen las columnas con los tiempos de ejecución registrados (en formato ancho). Usando como semilla el valor 31, obtengan muestras aleatorias independientes de 14, 12 y 13 tiempos registrados por las versiones A, B y C, respectivamente. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+# Respuesta 3
+
+# Problema 4
+
+La memorista también intuye que, al comparar las mismas instancias de prueba con iguales características, las mejores soluciones encontradas por las diferentes versiones del algoritmo tienen rendimientos distintos. ¿Estará en lo cierto?
+Para responder, filtren los datos para tener las instancias con 50 o más nodos y seleccionen las columnas con los mejores rendimientos registrados. Usando como semilla el valor 31, obtengan una muestra aleatoria de 22 instancias. Realicen un análisis estadístico pertinente (enunciar hipótesis, revisar condiciones, seleccionar pruebas ómnibus y post-hoc según corresponda) para responder la pregunta planteada, utilizando pruebas no paramétricas de ser necesario.
+
+# Respuesta 4
+
