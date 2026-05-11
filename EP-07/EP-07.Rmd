@@ -364,15 +364,122 @@ tabla_muestras_P3 %>%
 
 ## Condiciones paramétricas
 
+La prueba paramétrica apropiada para este problema sería un ANOVA de una vía para muestras independientes, ya que se busca comparar los tiempos de ejecución entre tres versiones distintas del algoritmo. Para su aplicación se requiere que:
+
+1. La variable dependiente tenga propiedades de una escala de intervalos iguales.
+2. Las muestras sean independientes entre sí.
+3. Las observaciones provengan de poblaciones con distribución cercana a la normal.
+4. Las varianzas de las poblaciones sean similares.
+
+En este caso, la variable dependiente corresponde al tiempo de ejecución en milisegundos, por lo que se mide en una escala de razón. Además, el enunciado solicita obtener muestras aleatorias independientes para las versiones A, B y C, por lo que la independencia se cumple por diseño. Sin embargo, todavía se debe revisar si los tiempos de ejecución provienen de distribuciones aproximadamente normales y si las varianzas pueden considerarse similares.
+
+A continuación, se comprueba visualmente la normalidad mediante gráficos Q-Q y luego se formaliza esta revisión mediante la prueba Shapiro-Wilk, usando un nivel de significación de 0,05:
+
+```{r}
+library(ggpubr)
+
+datos_largos_P3 <- data.frame(
+  Version = factor(c(
+    rep("A", length(muestra_A_P3)),
+    rep("B", length(muestra_B_P3)),
+    rep("C", length(muestra_C_P3))
+  )),
+  Tiempo = c(muestra_A_P3, muestra_B_P3, muestra_C_P3)
+)
+
+g_p3 <- ggqqplot(datos_largos_P3,
+                 x = "Tiempo",
+                 facet.by = "Version",
+                 color = "Version",
+                 conf.int = TRUE,
+                 palette = c("steelblue", "steelblue1", "darkcyan"))
+
+g_p3 <- g_p3 +
+  rremove("x.ticks") + rremove("x.text") +
+  rremove("y.ticks") + rremove("y.text") +
+  rremove("axis.title")
+
+print(g_p3)
+```
+
+Los gráficos Q-Q permiten comparar los cuantiles observados de cada muestra con los cuantiles esperados bajo una distribución normal. Si los datos fueran aproximadamente normales, los puntos deberían ubicarse cerca de la línea recta y dentro de la banda de confianza. En este caso se observan desviaciones respecto de la línea en al menos una de las versiones, lo que sugiere que no todas las muestras cumplen razonablemente la condición de normalidad.
+
+```{r}
+normalidad_p3 <- datos_largos_P3 %>%
+  group_by(Version) %>%
+  summarise(
+    W = as.numeric(shapiro.test(Tiempo)$statistic),
+    p_valor = shapiro.test(Tiempo)$p.value,
+    .groups = "drop"
+  )
+
+normalidad_p3 %>%
+  kbl(digits = 4,
+      caption = "Prueba de Shapiro-Wilk para los tiempos de ejecución") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE)
+```
+
+La prueba de Shapiro-Wilk confirma lo observado en los gráficos Q-Q. Con un nivel de significación $\alpha = 0,05$, al menos una de las muestras presenta evidencia suficiente para rechazar la hipótesis nula de normalidad. Por lo tanto, no se cumple una de las condiciones necesarias para aplicar válidamente un ANOVA de una vía paramétrico.
+
+Como complemento, se revisa la homogeneidad de varianzas mediante la prueba de Fligner-Killeen:
+
+```{r}
+prueba_varianzas_p3 <- fligner.test(Tiempo ~ Version, data = datos_largos_P3)
+prueba_varianzas_p3
+```
+
+La prueba de Fligner-Killeen no entrega evidencia suficiente para rechazar la hipótesis nula de igualdad de varianzas entre las versiones. Sin embargo, aunque esta condición no presenta problemas importantes, el incumplimiento de normalidad ya es suficiente para preferir una prueba no paramétrica.
+
 ## Selección de la prueba
+
+Como no se cumplen todas las condiciones para aplicar un ANOVA de una vía, corresponde utilizar una alternativa no paramétrica. Según la lectura del capítulo 11, para comparar más de dos muestras independientes se utiliza la prueba de Kruskal-Wallis.
+
+Esta prueba funciona como una prueba ómnibus: permite determinar si existe evidencia de diferencias entre las distribuciones de al menos dos grupos, pero no indica por sí sola entre qué versiones se encuentran esas diferencias. Por eso, solo si la prueba resulta significativa corresponde aplicar un análisis post-hoc con pruebas de Wilcoxon-Mann-Whitney para comparaciones entre pares, ajustando los valores p por comparaciones múltiples.
 
 ## Formulación de Hipótesis
 
+- $H_0$: No hay diferencias significativas en la localización de los tiempos de ejecución entre las versiones A, B y C del algoritmo cuando las instancias tienen 50 o más nodos.
+- $H_A$: Al menos una versión del algoritmo presenta una localización de tiempos de ejecución distinta a la de otra versión cuando las instancias tienen 50 o más nodos.
+
 ## Condiciones
+
+Las condiciones de la prueba de Kruskal-Wallis son:
+
+1. La escala de la variable dependiente debe ser, a lo menos, ordinal.
+2. Las observaciones deben ser independientes entre sí.
+3. La variable independiente debe tener al menos dos niveles.
+
+Estas condiciones se cumplen en este caso. El tiempo de ejecución en milisegundos es una variable numérica de razón, las muestras fueron obtenidas de forma aleatoria e independiente para cada versión, y la variable independiente corresponde a la versión del algoritmo, con tres niveles: A, B y C.
 
 ## Prueba estadística
 
+```{r}
+prueba_kruskal_p3 <- kruskal.test(Tiempo ~ Version, data = datos_largos_P3)
+prueba_kruskal_p3
+```
+
+```{r}
+if (prueba_kruskal_p3$p.value < 0.05) {
+  post_hoc_p3 <- pairwise.wilcox.test(
+    datos_largos_P3$Tiempo,
+    datos_largos_P3$Version,
+    p.adjust.method = "holm",
+    paired = FALSE,
+    exact = FALSE
+  )
+  
+  post_hoc_p3
+} else {
+  "No corresponde realizar análisis post-hoc, porque la prueba ómnibus no fue significativa."
+}
+```
+
 ## Conclusión
+
+Con un nivel de significación $\alpha = 0,05$, la prueba de Kruskal-Wallis entrega un p-valor aproximado de $0,259$, el cual es mayor que $0,05$. Por lo tanto, no existe evidencia suficiente para rechazar la hipótesis nula.
+
+En consecuencia, a partir de las muestras analizadas no es posible afirmar que existan diferencias significativas en el tiempo de ejecución entre las versiones A, B y C del algoritmo cuando las instancias tienen 50 o más nodos. Así, los datos no respaldan la intuición de la memorista. Además, como la prueba ómnibus no resultó significativa, no corresponde realizar un análisis post-hoc entre pares de versiones.
 
 # Problema 4
 
