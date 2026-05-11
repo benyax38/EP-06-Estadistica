@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 # Contexto
 
-En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
+En el trabajo de título de una estudiante del DIINF se reportan tiempos de ejecución (en milisegundos) y la cercanía con la solución óptima (en por ciento) de la mejor solución encontrada con tres versiones de un algoritmo genético para resolver instancias del problema del vendedor viajero disponibles en repositorios públicos. Ahora debe enfrentar el análisis de estos datos, por lo que está solicitando ayuda de las y los estudiantes de Estadística Inferencial.
 
 ## Lectura de datos
 
@@ -110,6 +110,8 @@ Para responder, filtren los datos para tener las instancias con 70 o más nodos 
 
 # Respuesta 1
 
+Filtrado de datos:
+
 ```{r}
 library(dplyr)
 
@@ -152,16 +154,126 @@ tabla_muestras_P1 %>%
 
 ## Condiciones paramétricas
 
+Las dos muestras capturadas son independientes entre si, debido a que la elección de los datos se hicieron de manera aleatoria y de forma separada para los tiempos de ejecución de las versiones A y B del algoritmo. Además, debemos agregar que los tamaños de las muestras son distintos, por lo que aseguramos que no existe relación alguna entre las observaciones.
+
+La prueba paramétrica apropiada para este problema, es la prueba t de student para dos muestras independientes. Para su aplicación requiere las siguientes condiciones:
+
+1. Cada muestra cumple las condiciones para usar la distribución t.
+2. Las muestras son independientes entre sí.
+
+La segunda condición ya fue argumentada, por lo que pasamos a recordar las condiciones para la prueba t de una muestra:
+
+1. Las observaciones son independientes entre sí.
+2. Las observaciones provienen de una distribución cercana a la normal.
+
+La función "sample" de R base, permite obtener muestras aleatorias asegurando que las observaciones sean independientes entre sí, ya que no existen sesgos en un algoritmo (sólo opera sobre valores numéricos), a diferencia de lo que podría ocurrir con datos obtenidos de encuestas o seleccionados por alguna persona x.
+
+A continuación, se comprueba si las muestras provienen de una distribución normal mediante gráficos QQ y la prueba Shapiro-Wilk utilizando un nivel de significancia de 0.05:
+
+```{r}
+library(ggpubr)
+
+# Visualización Q-Q con bandas de confianza
+p1 <- ggqqplot(muestra_A_P1, title = "Q-Q Plot Versión A", conf.int = TRUE)
+p2 <- ggqqplot(muestra_B_P1, title = "Q-Q Plot Versión B", conf.int = TRUE)
+ggarrange(p1, p2, ncol = 2)
+```
+
+El gráfico para la muestra de tiempos A sugiere que los datos no siguen una distribución normal, debido a un par de puntos alejados del área de confianza. Respecto a la muestra B sugiere que si existe normalidad para la distribución.
+
+**Versión 2 para qq-plot**
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+
+# 1. Crear el data frame directamente en formato largo
+# Esto soluciona el problema de los tamaños desiguales (24 y 20)
+df_A <- data.frame(Version = "A", Tiempo = muestra_A_P1)
+df_B <- data.frame(Version = "B", Tiempo = muestra_B_P1)
+
+# Unir ambos grupos uno debajo del otro
+datos_largos_P1 <- rbind(df_A, df_B) %>%
+  mutate(Version = factor(Version))
+
+# 2. Generar los gráficos Q-Q con la configuración solicitada
+# Nota: Usamos conf.int = TRUE para mostrar la banda de confianza del 0.05
+g1 <- ggqqplot(datos_largos_P1, 
+               x = "Tiempo", 
+               facet.by = "Version", # Esta opción de ggpubr es más directa
+               color = "Version",
+               conf.int = TRUE,      # Crucial para determinar normalidad [cite: 918]
+               palette = c("steelblue", "steelblue1"))
+
+# Ajustes estéticos solicitados
+g1 <- g1 + 
+  rremove("x.ticks") + rremove("x.text") +
+  rremove("y.ticks") + rremove("y.text") +
+  rremove("axis.title")
+
+print(g1)
+```
+
+
+```{r}
+# Prueba de normalidad
+shapiro_A <- shapiro.test(muestra_A_P1)
+shapiro_B <- shapiro.test(muestra_B_P1)
+
+print(shapiro_A)
+print(shapiro_B)
+```
+
+Las pruebas Shapiro-Wilk confirman la información que entregan los QQ-plot. Con un nivel de confianza de 95% se rechaza la hipótesis nula de normalidad para la muestra A y para la muestra B no es posible rechazar (existe normalidad).
+
 ## Selección de la prueba
+
+Como no es posible aplicar la prueba paramétrica de t student para una o dos muestras, haremos uso de la alternativa no paramétrica: Wilcoxon-Mann-Whitney, prueba que requiere las siguientes condiciones:
+
+1. Las observaciones de ambas muestras son independientes.
+2. La escala de medición empleada debe ser a lo menos ordinal, de modo que tenga sentido hablar de relaciones de orden ("igual que", "mayor que", "menor o igual que").
 
 ## Formulación de Hipótesis
 
+Las hipótesis a utilizar son:
+
+H0: No hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
+
+HA: Hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
+
 ## Condiciones
+
+La primera condición de la prueba (observaciones de ambas muestras independientes) ya ha sido probada, basándose en la aleatoriedad de las muestras realizadas. La segunda habla acerca de la escala de medición empleada para la variable dependiente, que en este caso corresponde al tiempo de ejecución de las versiones del algoritmo, el cual presenta una escala de razón, por lo que si se cumple.
 
 ## Prueba estadística
 
+En este caso, como tenemos muestras "grandes" (mayores a 5 observaciones) utilizamos la función wilcox.test() para aplicar la prueba:
+
+```{r}
+# Documentación de la lectura
+# x, y: los vectores de las muestras
+# paired = FALSE: indica que las muestras son independientes
+# alternative = "two.sided": busca cualquier diferencia (bilateral)
+# conf.level = 0.95: nivel de confianza definido (alfa = 0.05)
+# mu = se omite, por lo que la diferencia de medias es cero
+
+resultado_wilcox <- wilcox.test(x = muestra_A_P1, 
+                                y = muestra_B_P1, 
+                                paired = FALSE, 
+                                alternative = "two.sided", 
+                                conf.level = 0.95)
+
+print(resultado_wilcox)
+```
+
 ## Conclusión
 
+Se obtuvieron dos muestras aleatorias de tamaño $n_A=24$ y $n_B=20$ para los tiempos de ejecución de las versiones A y B del algoritmo genético. Se ha demostrado que el uso de la prueba paramétrica t de student para dos muestras independientes no puede aplicarse, debido a que tenemos evidencia para afirmar que no se cumple la normalidad en una de ellas. Luego, se decidió utilizar su alternativa no paramétrica: La prueba de Wilcoxon-Mann-Whitney. Continuamos con la definición de las hipótesis, la comprobación de condiciones (que salió exitosa) y la aplicación de la prueba.
+
+El resultado obtenido es un $p_{value}=0.06047$ el cual supera al nivel de significancia $\alpha=0.05$, por lo que no existe evidencia suficiente para rechazar la hipótesis nula y aceptamos, con un 95% de confianza, que no hay diferencias significativas entre la distribución de los tiempos de ejecución para las versiones A y B del algoritmo, sugiriendo que los datos no respaldan la intuición de la memorista.
+
+Nota: Todas las condiciones de las pruebas fueron extraídas del libro Jara y Köhler (s. f.).
 
 # Problema 2
 
@@ -310,3 +422,8 @@ muestra_rendimiento %>%
 ## Prueba estadística
 
 ## Conclusión
+
+
+# Referencias
+
+Jara, J. L., & Köhler, J. (s. f.). Inferencia y modelos estadísticos [Perusall].
