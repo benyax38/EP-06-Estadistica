@@ -21,6 +21,11 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 4 # Parámetros para el tamaño de gráficas
 )
+
+library(tidyr)
+library(dplyr)
+library(ggpubr)
+library(ez)
 ```
 
 # Contexto
@@ -44,12 +49,12 @@ library(kableExtra)
 # Crear el data frame con la información técnica
 tabla_variables <- data.frame(
   Variable = c(
-    "**instancia**", 
-    "**n.nodos**", 
-    "**n.aristas**", 
-    "**tiempo.A / B / C**", 
-    "**mejor.A / B / C**", 
-    "**Algoritmo**"
+    "instancia", 
+    "n.nodos", 
+    "n.aristas", 
+    "tiempo.A / B / C", 
+    "mejor.A / B / C", 
+    "Algoritmo"
   ),
   Clasificación = c(
     "Independiente (ID)", 
@@ -86,8 +91,6 @@ tabla_variables %>%
 ## Transformar datos
 
 ```{r}
-library(tidyr)
-library(dplyr)
 
 # Pivoteo múltiple: manejamos tiempo y mejor desempeño a la vez
 datos_largos <- datos_algoritmo %>%
@@ -154,7 +157,7 @@ tabla_muestras_P1 %>%
 
 ## Condiciones paramétricas
 
-Las dos muestras capturadas son independientes entre si, debido a que la elección de los datos se hicieron de manera aleatoria y de forma separada para los tiempos de ejecución de las versiones A y B del algoritmo. Además, debemos agregar que los tamaños de las muestras son distintos, por lo que aseguramos que no existe relación alguna entre las observaciones.
+Las dos muestras capturadas son independientes entre sí, debido a que la elección de los datos se hizo de manera aleatoria y de forma separada para los tiempos de ejecución de las versiones A y B del algoritmo. Además, debemos agregar que los tamaños de las muestras son distintos, por lo que aseguramos que no existe relación alguna entre las observaciones.
 
 La prueba paramétrica apropiada para este problema, es la prueba t de student para dos muestras independientes. Para su aplicación requiere las siguientes condiciones:
 
@@ -170,23 +173,8 @@ La función "sample" de R base, permite obtener muestras aleatorias asegurando q
 
 A continuación, se comprueba si las muestras provienen de una distribución normal mediante gráficos QQ y la prueba Shapiro-Wilk utilizando un nivel de significancia de 0.05:
 
-```{r}
-library(ggpubr)
-
-# Visualización Q-Q con bandas de confianza
-p1 <- ggqqplot(muestra_A_P1, title = "Q-Q Plot Versión A", conf.int = TRUE)
-p2 <- ggqqplot(muestra_B_P1, title = "Q-Q Plot Versión B", conf.int = TRUE)
-ggarrange(p1, p2, ncol = 2)
-```
-
-El gráfico para la muestra de tiempos A sugiere que los datos no siguen una distribución normal, debido a un par de puntos alejados del área de confianza. Respecto a la muestra B sugiere que si existe normalidad para la distribución.
-
-**Versión 2 para qq-plot**
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggpubr)
 
 # 1. Crear el data frame directamente en formato largo
 # Esto soluciona el problema de los tamaños desiguales (24 y 20)
@@ -215,6 +203,8 @@ g1 <- g1 +
 print(g1)
 ```
 
+El gráfico para la muestra de tiempos A sugiere que los datos no siguen una distribución normal, debido a un par de puntos alejados del área de confianza. Respecto a la muestra B sugiere que sí existe normalidad para la distribución.
+
 
 ```{r}
 # Prueba de normalidad
@@ -238,13 +228,13 @@ Como no es posible aplicar la prueba paramétrica de t student para una o dos mu
 
 Las hipótesis a utilizar son:
 
-H0: No hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
+$H_0$: No hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
 
-HA: Hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
+$H_a$: Hay diferencias significativas en el tiempo de ejecución entre las versiones A y B del algoritmo cuando las instancias tienen 70 o más nodos.
 
 ## Condiciones
 
-La primera condición de la prueba (observaciones de ambas muestras independientes) ya ha sido probada, basándose en la aleatoriedad de las muestras realizadas. La segunda habla acerca de la escala de medición empleada para la variable dependiente, que en este caso corresponde al tiempo de ejecución de las versiones del algoritmo, el cual presenta una escala de razón, por lo que si se cumple.
+La primera condición de la prueba (observaciones de ambas muestras independientes) ya ha sido probada, basándose en la aleatoriedad de las muestras realizadas. La segunda habla acerca de la escala de medición empleada para la variable dependiente, que en este caso corresponde al tiempo de ejecución de las versiones del algoritmo, el cual presenta una escala de razón, por lo que sí se cumple.
 
 ## Prueba estadística
 
@@ -271,7 +261,7 @@ print(resultado_wilcox)
 
 Se obtuvieron dos muestras aleatorias de tamaño $n_A=24$ y $n_B=20$ para los tiempos de ejecución de las versiones A y B del algoritmo genético. Se ha demostrado que el uso de la prueba paramétrica t de student para dos muestras independientes no puede aplicarse, debido a que tenemos evidencia para afirmar que no se cumple la normalidad en una de ellas. Luego, se decidió utilizar su alternativa no paramétrica: La prueba de Wilcoxon-Mann-Whitney. Continuamos con la definición de las hipótesis, la comprobación de condiciones (que salió exitosa) y la aplicación de la prueba.
 
-El resultado obtenido es un $p_{value}=0.06047$ el cual supera al nivel de significancia $\alpha=0.05$, por lo que no existe evidencia suficiente para rechazar la hipótesis nula y aceptamos, con un 95% de confianza, que no hay diferencias significativas entre la distribución de los tiempos de ejecución para las versiones A y B del algoritmo, sugiriendo que los datos no respaldan la intuición de la memorista.
+El resultado obtenido es un $p_{value}=0.06047$ el cual supera al nivel de significancia $\alpha=0.05$, por lo que no existe evidencia suficiente para rechazar la hipótesis nula. En consecuencia, con un 95% de confianza, no es posible afirmar que haya diferencias significativas entre la distribución de los tiempos de ejecución para las versiones A y B del algoritmo, sugiriendo que los datos no respaldan la intuición de la memorista.
 
 Nota: Todas las condiciones de las pruebas fueron extraídas del libro Jara y Köhler (s. f.).
 
@@ -294,21 +284,108 @@ datos_filtrados_pregunta_2 <- datos_algoritmo %>%
   select(mejor.B, mejor.C) %>%
   sample_n(24)
 
-# Visualizar la muestra (formato ancho)
-head(datos_filtrados_pregunta_2)
+# Mostrar tabla completa de la muestra
+datos_filtrados_pregunta_2 %>%
+  mutate(Instancia = row_number()) %>%
+  relocate(Instancia) %>%
+  kbl(caption = "Muestra Aleatoria de Mejores Rendimientos (n=24 instancias, ≥70 nodos)",
+      booktabs = TRUE,
+      align = "c",
+      col.names = c("Instancia", "Versión B", "Versión C")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F,
+                position = "center") %>%
+  add_header_above(c(" " = 1, "Mejor Rendimiento (%)" = 2))
+
 ```
 
 ## Condiciones paramétricas
 
+En este problema se comparan los mejores rendimientos de las versiones B y C sobre las mismas instancias de prueba. Por lo que se debe aplicar una prueba de muestras correlacionadas.La prueba paramétrica correspondiente sería una prueba t de Student para muestras pareadas, cuyas condiciones son:
+
+1. Los pares de observaciones son independientes entre sí.
+2. Las diferencias entre observaciones apareadas siguen una distribución cercana a la normal.
+
+La primera condición se cumple: las 24 instancias fueron seleccionadas aleatoriamente, y cada instancia es independiente de las demás. Para la segunda condición, debemos verificar la normalidad de las diferencias:
+
+```{r}
+#Calcular las diferencias pareadas
+diferencias_P2 <- datos_filtrados_pregunta_2$mejor.B - datos_filtrados_pregunta_2$mejor.C
+
+ggqqplot(diferencias_P2, title = "Q-Q Plot de las diferencias (B - C)") + rremove("x.ticks") + rremove("x.text") + rremove("y.ticks") + rremove("y.text") + rremove("axis.title")
+```
+
+Se observan la mayoría de las observaciones dentro de nuestro rango de confianza, pero tenemos outliers. Para confirmar esto aplicamos la prueba de normalidad de Shapiro-Wilk:
+
+```{r}
+shapiro_dif_P2 <- shapiro.test(diferencias_P2)
+print(shapiro_dif_P2)
+```
+
+Obtenemos un $p-value = 0.0002$, siendo menor que $0.05$ se rechaza la normalidad. Se debe continuar con una alternativa no paramétrica.
+
 ## Selección de la prueba
+
+Dado que se comparan dos muestras correlacionadas, se utiliza la prueba de rangos con signo de Wilcoxon, que es la alternativa no paramétrica para muestras pareadas.
+
+Las condiciones para esta prueba son:
+
+1. Los pares de observaciones son independientes entre sí.
+2. La escala de medición empleada para ambas muestras debe ser a lo menos ordinal.
 
 ## Formulación de Hipótesis
 
+
+- $H_0$: No hay diferencias en el rendimiento de las mejores soluciones encontradas por las versiones B y C del algoritmo cuando se comparan sobre las mismas instancias con 70 o más nodos.
+- $H_A$: Hay diferencias en el rendimiento de las mejores soluciones encontradas por las versiones B y C del algoritmo cuando se comparan sobre las mismas instancias con 70 o más nodos.
+
 ## Condiciones
+
+La primera condición ya vimos que se cumple, ya que las 24 instancias fueron seleccionadas de manera aleatoria, y cada par de observaciones (B, C) corresponde a una instancia distinta e independiente del resto. 
+
+La segunda condición también se cumple: el rendimiento medido en porcentaje es numérico y ordinal.
 
 ## Prueba estadística
 
+Ya verificadas la elección de la prueba, y sus condiciones, procedemos a realizar la prueba.
+
+```{r}
+# Prueba de rangos con signo de Wilcoxon para muestras pareadas
+resultado_wilcox_P2 <- wilcox.test(datos_filtrados_pregunta_2$mejor.B,
+                                    datos_filtrados_pregunta_2$mejor.C,
+                                    paired = TRUE,
+                                    alternative = "two.sided",
+                                    conf.level = 0.95)
+
+print(resultado_wilcox_P2)
+```
+
 ## Conclusión
+
+Se obtuvo un $p-valor=0.001555$ y un estadístico $V=44$. Aplicada la prueba con un $\alpha=0.05$, vemos que $p$ obtenido es menor al nivel de significación, por lo que existe evidencia suficiente para rechazar la hipótesis nula en favor de la alternativa. Esto quiere decir que existen diferencias significativas entre los rendimientos de ambas versiones.
+
+```{r}
+# Boxplot comparativo de rendimientos B vs C
+datos_largo_P2 <- datos_filtrados_pregunta_2 %>%
+  mutate(Instancia = row_number()) %>%
+  pivot_longer(cols = c(mejor.B, mejor.C),
+               names_to = "Version",
+               names_prefix = "mejor.",
+               values_to = "Rendimiento")
+
+ggboxplot(datos_largo_P2,
+          x = "Version", y = "Rendimiento",
+          color = "Version",
+          palette = c("steelblue", "darkcyan"),
+          add = "jitter",
+          title = "Comparación de rendimientos: Versión B vs C",
+          xlab = "Versión del algoritmo",
+          ylab = "Mejor rendimiento (%)")
+```
+
+
+Validado que existe una diferencia significativa entre ambas versiones, con la ayuda del Boxplot podemos concluir que el algoritmo de la versión C tiene un mejor rendimiento que el algoritmo de la versión B.
+
 
 # Problema 3
 
@@ -422,14 +499,27 @@ normalidad_p3 %>%
 
 La prueba de Shapiro-Wilk confirma lo observado en los gráficos Q-Q. Con un nivel de significación $\alpha = 0,05$, al menos una de las muestras presenta evidencia suficiente para rechazar la hipótesis nula de normalidad. Por lo tanto, no se cumple una de las condiciones necesarias para aplicar válidamente un ANOVA de una vía paramétrico.
 
-Como complemento, se revisa la homogeneidad de varianzas mediante la prueba de Fligner-Killeen:
+Como complemento, se revisa la homogeneidad de varianzas mediante la prueba de Levene:
 
-```{r}
-prueba_varianzas_p3 <- fligner.test(Tiempo ~ Version, data = datos_largos_P3)
-prueba_varianzas_p3
+```{r, warning=FALSE}
+datos_ez_P3 <- datos_largos_P3 %>%
+  mutate(Instancia_ID = factor(1:n()))
+
+# Realizar el ANOVA usando ezANOVA()
+prueba_ez_P3 <- ezANOVA(
+  data = datos_ez_P3,
+  dv = Tiempo,             # Variable Dependiente (Tiempo)
+  wid = Instancia_ID,      # Identificador único de la observación
+  between = Version,       # Factor entre-sujetos
+  return_aov = TRUE,
+  detailed = TRUE
+)
+
+# Mostrar resultados extrayendo la prueba de Levene que es la que nos interesa
+print(prueba_ez_P3$`Levene's Test for Homogeneity of Variance`)
 ```
 
-La prueba de Fligner-Killeen no entrega evidencia suficiente para rechazar la hipótesis nula de igualdad de varianzas entre las versiones. Sin embargo, aunque esta condición no presenta problemas importantes, el incumplimiento de normalidad ya es suficiente para preferir una prueba no paramétrica.
+La prueba de Levene no entrega evidencia suficiente para rechazar la hipótesis nula de igualdad de varianzas entre las versiones, arrojando un $p-valor=0.30$. Sin embargo, aunque esta condición no presenta problemas importantes, el incumplimiento de normalidad ya es suficiente para preferir una prueba no paramétrica.
 
 ## Selección de la prueba
 
@@ -458,23 +548,6 @@ Estas condiciones se cumplen en este caso. El tiempo de ejecución en milisegund
 prueba_kruskal_p3 <- kruskal.test(Tiempo ~ Version, data = datos_largos_P3)
 prueba_kruskal_p3
 ```
-
-```{r}
-if (prueba_kruskal_p3$p.value < 0.05) {
-  post_hoc_p3 <- pairwise.wilcox.test(
-    datos_largos_P3$Tiempo,
-    datos_largos_P3$Version,
-    p.adjust.method = "holm",
-    paired = FALSE,
-    exact = FALSE
-  )
-  
-  post_hoc_p3
-} else {
-  "No corresponde realizar análisis post-hoc, porque la prueba ómnibus no fue significativa."
-}
-```
-
 ## Conclusión
 
 Con un nivel de significación $\alpha = 0,05$, la prueba de Kruskal-Wallis entrega un p-valor aproximado de $0,259$, el cual es mayor que $0,05$. Por lo tanto, no existe evidencia suficiente para rechazar la hipótesis nula.
@@ -501,7 +574,7 @@ datos_filtrados_pregunta_4 <- datos_algoritmo %>%
 
 # Obtener muestra aleatoria de 22 instancias
 muestra_rendimiento <- datos_filtrados_pregunta_4 %>%
-  sample_n(22)
+  slice_sample(n = 22)
 ```
 
 Mostrar los datos de la muestra:
@@ -520,7 +593,7 @@ muestra_rendimiento %>%
 
 ## Condiciones paramétricas
 
-La prueba paramétrica de referencia para esta pregunta sería un ANOVA de una vía para muestras correlacionadas, ya que se comparan los mejores rendimientos obtenidos por las versiones A, B y C del algoritmo sobre las mismas instancias de prueba. En este diseño, cada fila de la muestra corresponde a una misma instancia evaluada por las tres versiones, por lo que las mediciones no deben tratarse como independientes entre versiones.
+La prueba paramétrica de referencia para esta pregunta sería un ANOVA de una vía para muestras correlacionadas, ya que se comparan los mejores rendimientos obtenidos por las versiones A, B y C del algoritmo. En este diseño, cada fila de la muestra corresponde a una misma instancia evaluada por las tres versiones, por lo que las mediciones no deben tratarse como independientes entre versiones.
 
 Es importante notar que el hecho de tener tres columnas con el mismo tamaño no basta por sí solo para hablar de muestras correlacionadas. Lo decisivo es que las tres mediciones de rendimiento provienen de la misma instancia, compartiendo sus características propias, como número de nodos, número de aristas y dificultad del problema.
 
@@ -533,6 +606,52 @@ Para aplicar válidamente un ANOVA de una vía para muestras correlacionadas, se
 
 En este caso, la variable dependiente corresponde al mejor rendimiento registrado, medido como porcentaje de cercanía a la solución óptima. Esta variable es numérica y puede ordenarse e interpretarse en términos de magnitud. Además, las 22 instancias fueron seleccionadas como una muestra aleatoria, por lo que se puede asumir independencia entre instancias. Sin embargo, como las versiones A, B y C se evalúan sobre las mismas instancias, corresponde trabajar el problema como un diseño de muestras correlacionadas y revisar las condiciones de normalidad y esfericidad antes de aplicar un procedimiento paramétrico.
 
+```{r}
+# Transformar a formato largo para verificar normalidad
+muestra_larga_p4 <- muestra_rendimiento %>%
+  mutate(instancia = row_number()) %>%
+  pivot_longer(cols = starts_with("mejor"),
+               names_to = "Algoritmo",
+               values_to = "Rendimiento")
+
+# Gráficos Q-Q por versión
+ggqqplot(muestra_larga_check,
+         x = "Rendimiento",
+         facet.by = "Algoritmo",
+         color = "Algoritmo",
+         conf.int = TRUE,
+         palette = c("steelblue", "steelblue1", "darkcyan")) +
+  rremove("x.ticks") + rremove("x.text") +
+  rremove("y.ticks") + rremove("y.text") +
+  rremove("axis.title")
+
+```
+
+El gráfico Q-Q falla en mostrar normalidad para la versión A y C, habiendo observaciones fuera del rango aceptable. Confirmamos esto con una prueba de Shapiro-Wilk:
+```{r}
+# Pruebas de normalidad de Shapiro-Wilk por versión
+normalidad_p4 <- muestra_larga_p4 %>%
+  group_by(Algoritmo) %>%
+  summarise(
+    W = as.numeric(shapiro.test(Rendimiento)$statistic),
+    p_valor = shapiro.test(Rendimiento)$p.value,
+    .groups = "drop"
+  )
+
+normalidad_p4 %>%
+  kbl(digits = 4,
+      caption = "Prueba de Shapiro-Wilk para los rendimientos por versión") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE)
+```
+
+La prueba de Shapiro-Wilk arroja los siguientes resultados:
+- mejor.A: $p=0.0071$
+- mejor.B: $p=0.4483$
+- mejor.C: $p=0.0061$
+
+Confirmando lo observado en el gráfico Q-Q, se rechaza la hipótesis nula de normalidad para los algoritmos A y C.
+
 ## Selección de la prueba
 
 Como las versiones A, B y C se comparan usando las mismas instancias, las muestras son correlacionadas. Por eso, si se cumplieran las condiciones paramétricas, correspondería aplicar un ANOVA de una vía para muestras correlacionadas.
@@ -543,22 +662,95 @@ Si Friedman resulta significativa, el análisis debería continuar con comparaci
 
 ## Formulación de Hipótesis
 
-Para el procedimiento paramétrico de referencia, las hipótesis serían:
-
-- $H_0$: El rendimiento promedio de las versiones A, B y C del algoritmo es el mismo cuando se comparan sobre las mismas instancias de prueba con 50 o más nodos.
-- $H_A$: Al menos una versión del algoritmo presenta un rendimiento promedio distinto al de otra versión cuando se comparan sobre las mismas instancias de prueba con 50 o más nodos.
-
-Si no se cumplen las condiciones necesarias para aplicar el ANOVA de medidas repetidas y se utiliza la alternativa no paramétrica de Friedman, las hipótesis se adaptan a una comparación de rangos o localización:
+Como no se cumplen las condiciones necesarias para aplicar el ANOVA de medidas repetidas, se utiliza la alternativa no paramétrica de Friedman, las hipótesis se adaptan a una comparación de rangos o localización:
 
 - $H_0$: Las versiones A, B y C presentan rendimientos similares cuando se comparan sobre las mismas instancias de prueba.
 - $H_A$: Al menos una versión del algoritmo presenta rendimientos distintos respecto de otra versión.
 
 ## Condiciones
 
+Recordemos las condiciones requeridas para aplicar la prueba de Friedman que son menos restrictivas que la prueba ANOVA:
+
+1. La escala de la variable dependiente debe ser, a lo menos, ordinal.
+2. Las observaciones son una muestra aleatoria e independiente de la población.
+3. La variable independiente debe ser categórica y tener a lo menos tres niveles.
+
+La variable dependiente estudiada corresponde a un porcentaje que representa la cercanía a la solución óptima. Este valor depende de esa solución óptima reportada y es relativo para cada instancia de la muestra. Por lo tanto, para una misma instancia podemos decir que la variable dependiente es ordinal, ya que admite comparaciones de tipo igual que, menor que, mayor o igual que, entre otras.
+
+Respecto a las observaciones, se seleccionó la función sample_n en un principio, pero, siguiendo las recomendaciones de la documentación de R, se cambió por slice_sample() que es una versión más optimizada. El uso de funciones dedicadas nos asegura que las observaciones de cada muestra sean aleatorias y no dependan de la población.
+
+Por último, la variable independiente involucrada corresponde a las versiones del algoritmo. Es una variable categórica, ya que permite clasificar los datos de acuerdo a sus 3 niveles fijos (A, B y C).
+
 ## Prueba estadística
+
+A continuación aplicamos la prueba de Friedman no paramétrica con un nivel de significancia de 0.05:
+
+```{r}
+# Cargar librerías necesarias
+library(tidyr)
+library(dplyr)
+
+# Aplicar la prueba de Friedman
+# Rendimiento (VD) ~ Algoritmo (VI) | instancia (ID_Caso)
+resultado_friedman <- friedman.test(Rendimiento ~ Algoritmo | instancia, 
+                                    data = muestra_larga_p4)
+
+# Mostrar resultados
+print(resultado_friedman)
+```
+Obtenemos un $p-value=0.0007956$ y un estadístico chi-cuadrado = $14.273$
+
+Como el valor p está por debajo del nivel de significancia, se requiere la aplicación de procedimientos post-hoc. En este caso, utilizamos la corrección de Holm mediante la función pairwise.wilcox.test():
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(broom)
+library(knitr)
+
+# Definir nivel de significancia
+alfa <- 0.05
+
+# Efectuar procedimiento post-hoc de Holm
+  # Realizamos comparaciones por pares con corrección de Holm
+post_hoc <- pairwise.wilcox.test(muestra_larga$Rendimiento, 
+                                 muestra_larga$Algoritmo,
+                                 p.adjust.method = "holm",
+                                 paired = TRUE, exact = FALSE)
+  
+  # Organización de resultados
+  post_hoc_tidy <- tidy(post_hoc) |> 
+    rename(Grupo1 = group2, Grupo2 = group1) |> 
+    arrange(Grupo1) |> 
+    relocate(Grupo1)
+  
+  cat("Resultados del análisis post-hoc (Corrección de Holm):\n")
+  cat(paste0("  ", kable(post_hoc_tidy, digits = 3, format = "simple")), sep = "\n")
+```
+
+La prueba apareada de wilcox con corrección de Holm nos arroja los siguientes resultados:
+- Par (A, B): $p=0.002$
+- Par (A, C): $p=0.046$
+- Par (B, C): $p=0.119$
 
 ## Conclusión
 
+Por lo tanto, rechazada la hipótesis nula de la prueba ómnibus se procede al análisis post-hoc, identificando diferencias significativas entre el par (A, B) y el par (A, C), no existen diferencias significativas entre las versiones B y C. Para comprender bien las diferencias existentes realizamos un boxplot:
+
+```{r}
+ggboxplot(muestra_larga,
+          x = "Algoritmo", y = "Rendimiento",
+          color = "Algoritmo",
+          palette = c("steelblue", "steelblue1", "darkcyan"),
+          add = "jitter",
+          title = "Comparación de rendimientos por versión del algoritmo",
+          xlab = "Versión del algoritmo",
+          ylab = "Mejor rendimiento (%)") +
+  theme(legend.position = "none")
+
+```
+
+De esta forma, visualmente se confirma que la diferencia que corresponde a la versión A es de superioridad. Teniendo esta versión un mejor rendimiento tanto sobre la versión B como la versión C. Por lo tanto, los datos respaldan la intuición de la memorista: los rendimientos de las versiones no son iguales.
 
 # Referencias
 
