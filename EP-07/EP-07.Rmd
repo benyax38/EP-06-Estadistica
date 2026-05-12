@@ -520,9 +520,38 @@ muestra_rendimiento %>%
 
 ## Condiciones paramétricas
 
+La prueba paramétrica de referencia para esta pregunta sería un ANOVA de una vía para muestras correlacionadas, ya que se comparan los mejores rendimientos obtenidos por las versiones A, B y C del algoritmo sobre las mismas instancias de prueba. En este diseño, cada fila de la muestra corresponde a una misma instancia evaluada por las tres versiones, por lo que las mediciones no deben tratarse como independientes entre versiones.
+
+Es importante notar que el hecho de tener tres columnas con el mismo tamaño no basta por sí solo para hablar de muestras correlacionadas. Lo decisivo es que las tres mediciones de rendimiento provienen de la misma instancia, compartiendo sus características propias, como número de nodos, número de aristas y dificultad del problema.
+
+Para aplicar válidamente un ANOVA de una vía para muestras correlacionadas, se deben cumplir las siguientes condiciones:
+
+1. La variable dependiente debe tener propiedades de una escala de intervalos iguales.
+2. Las observaciones o casos deben ser independientes entre sí.
+3. Las poblaciones de origen deben seguir una distribución aproximadamente normal.
+4. La matriz de varianzas-covarianzas debe cumplir la condición de esfericidad.
+
+En este caso, la variable dependiente corresponde al mejor rendimiento registrado, medido como porcentaje de cercanía a la solución óptima. Esta variable es numérica y puede ordenarse e interpretarse en términos de magnitud. Además, las 22 instancias fueron seleccionadas como una muestra aleatoria, por lo que se puede asumir independencia entre instancias. Sin embargo, como las versiones A, B y C se evalúan sobre las mismas instancias, corresponde trabajar el problema como un diseño de muestras correlacionadas y revisar las condiciones de normalidad y esfericidad antes de aplicar un procedimiento paramétrico.
+
 ## Selección de la prueba
 
+Como las versiones A, B y C se comparan usando las mismas instancias, las muestras son correlacionadas. Por eso, si se cumplieran las condiciones paramétricas, correspondería aplicar un ANOVA de una vía para muestras correlacionadas.
+
+Sin embargo, si alguna condición importante no se cumple, especialmente normalidad o esfericidad, la alternativa no paramétrica adecuada es la prueba de Friedman. Esta prueba permite comparar tres o más muestras correlacionadas y funciona como prueba ómnibus: indica si hay evidencia de diferencias entre las versiones, pero no señala directamente entre qué pares ocurren.
+
+Si Friedman resulta significativa, el análisis debería continuar con comparaciones post-hoc mediante pruebas de rangos con signo de Wilcoxon para muestras pareadas, usando una corrección por comparaciones múltiples, como Holm.
+
 ## Formulación de Hipótesis
+
+Para el procedimiento paramétrico de referencia, las hipótesis serían:
+
+- $H_0$: El rendimiento promedio de las versiones A, B y C del algoritmo es el mismo cuando se comparan sobre las mismas instancias de prueba con 50 o más nodos.
+- $H_A$: Al menos una versión del algoritmo presenta un rendimiento promedio distinto al de otra versión cuando se comparan sobre las mismas instancias de prueba con 50 o más nodos.
+
+Si no se cumplen las condiciones necesarias para aplicar el ANOVA de medidas repetidas y se utiliza la alternativa no paramétrica de Friedman, las hipótesis se adaptan a una comparación de rangos o localización:
+
+- $H_0$: Las versiones A, B y C presentan rendimientos similares cuando se comparan sobre las mismas instancias de prueba.
+- $H_A$: Al menos una versión del algoritmo presenta rendimientos distintos respecto de otra versión.
 
 ## Condiciones
 
