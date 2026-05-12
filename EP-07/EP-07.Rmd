@@ -615,7 +615,7 @@ muestra_larga_p4 <- muestra_rendimiento %>%
                values_to = "Rendimiento")
 
 # Gráficos Q-Q por versión
-ggqqplot(muestra_larga_check,
+ggqqplot(muestra_larga_p4,
          x = "Rendimiento",
          facet.by = "Algoritmo",
          color = "Algoritmo",
@@ -713,8 +713,8 @@ alfa <- 0.05
 
 # Efectuar procedimiento post-hoc de Holm
   # Realizamos comparaciones por pares con corrección de Holm
-post_hoc <- pairwise.wilcox.test(muestra_larga$Rendimiento, 
-                                 muestra_larga$Algoritmo,
+post_hoc <- pairwise.wilcox.test(muestra_larga_p4$Rendimiento, 
+                                 muestra_larga_p4$Algoritmo,
                                  p.adjust.method = "holm",
                                  paired = TRUE, exact = FALSE)
   
@@ -738,7 +738,7 @@ La prueba apareada de wilcox con corrección de Holm nos arroja los siguientes r
 Por lo tanto, rechazada la hipótesis nula de la prueba ómnibus se procede al análisis post-hoc, identificando diferencias significativas entre el par (A, B) y el par (A, C), no existen diferencias significativas entre las versiones B y C. Para comprender bien las diferencias existentes realizamos un boxplot:
 
 ```{r}
-ggboxplot(muestra_larga,
+ggboxplot(muestra_larga_p4,
           x = "Algoritmo", y = "Rendimiento",
           color = "Algoritmo",
           palette = c("steelblue", "steelblue1", "darkcyan"),
