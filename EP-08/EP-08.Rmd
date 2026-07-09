@@ -46,6 +46,18 @@ head(datos_casen)
 
 Propongan una pregunta de investigación original, que involucre la comparación de la frecuencia en que se observa un evento o característica en dos grupos independientes (más abajo se dan unos ejemplos). Fijando una semilla propia, seleccionen una muestra aleatoria de hogares (100 < n < 150) y respondan la pregunta propuesta utilizando una prueba de permutaciones Monte Carlo. Deben reportar un intervalo de confianza para el estadístico utilizado usando las mismas remuestras.
 
+Para las personas con hijos, hay una diferencia entre si son solteros o no solteros
+(s4 = cantidad de hijos, ecivil = estado civil
+1 Casado(a)
+2 Conviviente o pareja sin acuerdo de unión civil
+3 Conviviente civil (con acuerdo de unión civil)
+4 Anulado(a)
+5 Separado(a)
+6 Divorciado (a)
+7 Viudo(a)
+8 Soltero(a)
+)
+
 # Respuesta 1
 
 ## Pregunta de investigación
