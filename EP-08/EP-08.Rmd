@@ -81,228 +81,98 @@ Propongan una pregunta de investigación original, que involucre la comparación
 
 ## Pregunta de investigación
 
-Pregunta 1: ¿Es igual la edad promedio (edad) de las personas según su nivel de dificultad visual (h10a)?
-
-Pregunta 2: ¿Difiere significativamente la edad media (edad) de los encuestados dependiendo de su grado de dificultad para caminar o subir escaleras (h10c)?
-
-Pregunta 3: ¿Varía la edad promedio (edad) de la población según su nivel de dificultad para recordar o concentrarse (h10d)?
-
-Pregunta 4: ¿Existe una diferencia en la edad promedio (edad) de las personas según su grado de dificultad para el cuidado personal, como asearse o vestirse (h10e)?
-
-Pregunta 5: ¿Es similar la edad media (edad) de los individuos dependiendo de su nivel de dificultad para comunicarse o ser comprendidos (h10f)?
-
-Pregunta 6: Centrándonos exclusivamente en las mujeres (sexo), ¿es igual su edad promedio (edad) según el nivel de dificultad que presentan para oír (h10b)?
-
-Pregunta 7: En el grupo de personas que declaran tener pareja (pareja), ¿difiere la edad promedio (edad) de acuerdo con su estado civil actual (ecivil)?
-
-Pregunta 8: Para los hombres (sexo) de la muestra, ¿existe una diferencia significativa en la edad media (edad) según su nivel de dificultad visual (h10a)?
-
-Pregunta 9: ¿Varía la edad promedio (edad) de los encuestados si comparamos a quienes viven en las regiones de Valparaíso, Metropolitana y Biobío (region)? (Nota: Aquí filtras tu muestra para usar solo esas 3 regiones y tener los grupos necesarios).
-
-Pregunta 10: ¿Es igual la edad promedio (edad) de las personas según su estado civil (ecivil) en la muestra general?
+El ingreso total del hogar promedio (ytotcorh) ¿Es similar entre los hogares que presentan un estado de conservación del piso (v5) "Bueno", "Aceptable" o "Malo"?
 
 ## Datos
 
+A continuación, para extraer la muestra de análisis se define una semilla "2026" que asegura la reproducibilidad del experimento. También, se define el tamaño de la muestra n en 250, dentro del rango solicitado. Normalmente, el método para resolver la comparación de varios grupos definidos por variables categóricas es ANOVA, pero una de las principales condiciones para su uso es la normalidad de los datos, la cual no se cumple de acuerdo a las gráficas QQ generadas.
+
 ```{r}
-# Cargar la librería necesaria
+# Librerías
 library(dplyr)
+library(ggpubr)
+library(WRS2)
 
-# 1. Fijar la semilla de reproducibilidad 
-set.seed(2026)
+# 1. Definición de variables
+semilla <- 2026
+n_total <- 250 # Tamaño total de la muestra aleatoria
+var_num <- "ytotcorh" # Variable numérica - ingreso total del hogar
+var_grupo <- "v5" # Variable categórica - estado de conservación del piso de la vivienda
 
-# 2. Filtrar y extraer la muestra aleatoria
-muestra_parejas <- datos_casen %>%
-  
-  # A. Filtramos incluyendo a todos los que tienen pareja (De hecho o Legal)
-  filter(pareja %in% c("De hecho", "Legal")) %>%
-  
-  # B. Extraemos una muestra aleatoria de 250 hogares/personas
-  slice_sample(n = 250) %>%
-  
-  # C. Seleccionamos las columnas útiles
-  select(id.vivienda, pareja, ecivil, edad)
+# 2. Fijar semilla
+set.seed(semilla)
 
-# 3. Verificamos cómo quedaron distribuidos los grupos
-table(muestra_parejas$ecivil)
+# 3. Extracción de muestra aleatoria
+muestra_exploratoria <- datos_casen %>%
+  filter(!is.na(!!sym(var_num)), !is.na(!!sym(var_grupo))) %>%
+  slice_sample(n = n_total)
+
+# 4. Verificación de distribución de grupos
+print(table(muestra_exploratoria[[var_grupo]]))
+
+# 5. Visualización Q-Q (Diagnóstico de normalidad)
+ggqqplot(
+  data = muestra_exploratoria, 
+  x = var_num,
+  facet.by = var_grupo,
+  color = var_grupo,
+  title = paste("Q-Q Plot:", var_num, "por", var_grupo)
+)
 ```
+
+Se observan desviaciones importantes en el comportamiento de los datos, lo que sugiere el incumplimiento de la condición de normalidad.
 
 ## Formulación de hipótesis
 
-$H_0$ = No existe diferencia significativa en la edad promedio de la población entre los distintos grupos de estado civil (para aquellas personas que declaran tener pareja). Es decir, la edad media es igual en todos los grupos.
+Para evaluar la existencia de diferencias en el ingreso promedio según el estado de conservación del piso, se plantean las siguientes hipótesis:
 
-$H_A$ = Existe una diferencia significativa en la edad promedio de al menos un grupo de estado civil respecto a los demás.
+$H_0$ = No existen diferencias en el ingreso total promedio de los hogares según el estado de conservación de su piso.
+
+**Hipótesis Nula ($H_0$):**
+$$H_0: \mu_{Bueno} = \mu_{Aceptable} = \mu_{Malo}$$
+
+$H_A$ = Existen diferencias en el ingreso total promedio de al menos uno de los grupos de conservación de piso respecto a los demás.
+
+**Hipótesis Alternativa ($H_A$):**
+$$H_A: \exists \, i, j \in \{1, 2, 3\} \text{ tal que } \mu_i \neq \mu_j$$
+
+Donde $\mu_1, \mu_2, \mu_3$ representan el ingreso total promedio de los hogares clasificados en los estados de conservación "Bueno", "Aceptable" y "Malo", respectivamente.
 
 ## Estadístico de interés
 
+De acuerdo a la pregunta e hipótesis planteada, el estadístico a analizar será la media. Se puede justificar su uso, debido a la naturaleza de la variable bajo estudio "ingreso total promedio de los hogares". Es una variable cuantitativa que presenta una escala de razón, ya que presenta un cero absoluto y la diferencia de pasar a ganar 400.000 a 600.000, es la misma que pasar de 600.000 a 800.000 pesos chilenos.
+
 ## Remuestreo
+
+Tal como se sugiere en el libro guía Jara, J. L., & Köhler, J. (s. f.), se hace uso de las funciones del paquete WRS2, específicamente t1waybt() para aplicar bootstrapping y mcppb20() para el respectivo análisis post-hoc. Se utiliza un nivel de confianza del 95%, nivel de poda de 0.2 y una cantidad de remuestras alta equivalente a 2000, asegurando que la distribución bootstrap encuentre una aproximación cercana de la media poblacional.
+
+```{r}
+# Variables
+alfa <- 0.5
+gamma <- 0.2
+R <- 2000
+
+# Análisis robusto con bootstrapping
+formula_est <- as.formula(paste(var_num, "~", var_grupo))
+
+# Prueba ómnibus
+resultado_omnibus <- t1waybt(formula_est, data = muestra_exploratoria, tr = gamma, nboot = R)
+print(resultado_omnibus)
+
+# Análisis Post-hoc
+if (resultado_omnibus$p.value < alfa) {
+  resultado_posthoc <- mcppb20(formula_est, data = muestra_exploratoria, tr = gamma, nboot = R)
+  print(resultado_posthoc)
+}
+```
+
 
 ## Conclusión
 
+El valor $p$ obtenido en la prueba bootstrap ($p = 0.004$) es menor al nivel de significancia $\alpha = 0.05$ definido, por lo que se puede rechazar la hipótesis nula con un 95% de confianza, sugiriendo que existe una diferencia en los ingresos de al menos uno de los grupos definidos por el estado de conservación del piso de la casa.
+
+Luego, el procedimiento post-hoc + bootstrapping permite afirmar con 95% de confianza (sin considerar el 20% en extremos) que las personas que reportan un estado de conservación del piso "Bueno" presentan ingresos superiores a quienes indican un estado de conservación "Aceptable". Para los demás pares, no es posible hallar diferencias significativas a partir de la muestra.
+
 # Referencias
 
-
-# Ejemplo libro
-
-Una universidad desea confirmar que en promedio, las calificaciones finales de las estudiantes mujeres es superior a la de hombres que cursan una asignatura inicial de programación por primera vez. Para ello disponen de las notas de 15 hombres y 13 mujeres.
-
-## 1. Revisión de la condición de normalidad de dos muestras independientes
-```{r}
-library(ggpubr)
-library(glue)
-library(rsample)
-library(rstatix)
-library(tidyverse) # dplyr, ggplot2, purrr, tibble, tidyr
-
-# Definir las muestras obtenidas
-notas_h <- c(4.1, 5.9, 4.4, 3.4, 3.6, 3.1, 3.4, 4.0, 3.7, 3.8, 5.9, 3.6, 4.5, 3.8, 4.2)
-notas_m <- c(3.7, 5.4, 5.3, 4.9, 5.7, 5.1, 5.9, 5.6, 4.8, 5.4, 5.9, 5.3, 3.2)
-
-# Crear matriz de datos con las muestras independientes
-Muestra <- factor(c(rep("hombres", length(notas_h)), rep("mujeres", length(notas_m))))
-datos_largos <- tibble(Muestra, Nota = c(notas_h, notas_m))
-
-# Comprobar la normalidad de las muestras
-norm_tests <- datos_largos |> group_by(Muestra) |> shapiro_test(Nota) |>
-    select(-variable) |> rename(W = statistic, Valor_p = p)
-
-msg <- "Pruebas de normalidad"
-cat(msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
-print(norm_tests)
-```
-
-## 2. Obtención de una distribución bootstrap para la diferencia de dos medias
-```{r}
-# Crear las remuestras, incluyendo la muestra original
-R <- 1999
-set.seed(432)
-remuestras <- bootstraps(datos_largos, times = R, strata = Muestra, apparent = TRUE)
-
-# Función que devuelve los estadísticos de interés para la diferencia
-# de las medias de dos muestras independientes en una remuestra.
-dif_dos_medias <- function(remuestra, ...) {
-  analysis(remuestra) |> group_by(Muestra) |>
-    summarise(n = n(), m = mean(Nota), v = var(Nota)) |>
-    summarise(term = "Dif. 2 medias", estimate = m[1] - m[2], std.error = sqrt(sum(v / n)))
-}
-
-# Obtener la distribución bootstrap de la diferencia de las medias
-dist_bt <- remuestras |> mutate(stats = map(splits, dif_dos_medias))
-```
-
-## 3. Estadísticas y gráficos para la distribución bootstrap de la diferencia de dos medias
-
-```{r}
-# Simplificar la estructura de la distribución bootstrap a una tabla para su análisis
-dist_bt_tbl <- dist_bt |> select(-splits) |> unnest(cols = stats)
-
-# Obtener y mostrar las estadísticas de la distribución bootstrap
-dif_obs <- dist_bt_tbl |> filter(id == "Apparent") |> pull(estimate)
-dist_bt_stats <- dist_bt_tbl |> filter(id != "Apparent") |>
-  summarise(Dif_obs = dif_obs, Dif_bt = mean(estimate), Dif_bt_es = sd(estimate)) |>
-  mutate(Sesgo = Dif_bt - Dif_obs, .before = 3) |> map_df(~ num(.x, digits = 4))
-
-msg <- "Estadísticas de la distribución bootstrap - diferencia de dos medias"
-cat("\n\n", msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
-print(dist_bt_stats)
-
-# Crear y mostrar los gráficos para la distribución bootstrap
-dist_bt_his <- dist_bt_tbl |> filter(id != "Apparent") |>
-  gghistogram(x = "estimate", bins = nclass.scott(dist_bt_tbl[["estimate"]]),
-              color = "steelblue", fill = "steelblue",
-              xlab = "Diferencia de Medias", ylab = "Frecuencia") +
-  geom_vline(xintercept = dif_obs, color = "steelblue4",
-             linetype = "dashed", linewidth = 1.2)
-dist_bt_qq <- dist_bt_tbl |> filter(id != "Apparent") |>
-  ggqqplot(x = "estimate", color = "steelblue", fill = "steelblue",
-           xlab = "Cuantiles teóricos (Normal)", ylab = "Cuantiles muestrales")
-titulo <- text_grob("Distribución bootstrap de la diferencia de dos medias",
-                    size = 12, face = "bold")
-dist_bt_pl <- ggarrange(dist_bt_his, dist_bt_qq, ncol = 2, labels = "AUTO") |>
-  annotate_figure(top = titulo)
-print(dist_bt_pl)
-```
-
-## 4. Obtención de intervalos de confianza para distribución bootstrap de la diferencia de dos medias
-
-```{r}
-# Calcular y mostrar intervalos de confianza unilaterales para el estadístico de interés
-alfa <- 0.05
-ic_t <- dist_bt |> int_t(statistics = stats, alpha = 2 * alfa)
-ic_perc <- dist_bt |> int_pctl(statistics = stats, alpha = 2 * alfa)
-ic_bias <- dist_bt |> int_bca(statistics = stats, alpha = 2 * alfa, .fn = dif_dos_medias)
-ics <- bind_rows(ic_t, ic_perc, ic_bias) |> select(-.alpha) |>
-  mutate(.lower = -Inf) |> mutate(across(where(is.numeric), ~ num(., digits = 4)))
-
-msg <- "Intervalos de confianza unilaterales para la diferencia de dos medias"
-cat("\n", msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
-print(ics)
-```
-
-## 5. Desplazamiento de una de las muestras del ejemplo para representar la situación bajo la hipótesis nula
-
-```{r}
-# Desplazamos los valores de la muestra de hombres para reflejar la hipótesis nula
-valor_nulo <- -0.5
-desplazamiento <- valor_nulo - dif_obs
-datos_largos_HO <- datos_largos |>
-  mutate(Nota = if_else(Muestra == "hombres", Nota + desplazamiento, Nota))
-
-# Generamos las mismas remuestras con los datos que cumplen la hipótesis nula
-set.seed(432)
-remuestras_HO <- bootstraps(datos_largos_HO, times = R, strata = Muestra, apparent = TRUE)
-
-# Solo por esta vez, vamos a verificar que se han usado las mismas observaciones en ambos
-# conjuntos de remuestras (usan los mismos índices)
-
-# Primero, obtenemos los índices que usan y las ordenamos como matrices
-indices_orig <- remuestras |> pull(splits) |> map(~ .x[["in_id"]]) |>
-  set_names(remuestras |> pull(id)) |> as_tibble() |> t()
-indices_desp <- remuestras_HO |> pull(splits) |> map(~ .x[["in_id"]]) |>
-  set_names(remuestras_HO |> pull(id)) |> as_tibble() |> t()
-
-# Ahora mostramos las primeras filas de cada grupo de remuestras y el resultado final
-# de la comparación de todas las filas de las matrices.
-msg <- "Comparación de los índices usados en las remuestras"
-cat("\n", msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
-walk(1:5, ~ {
-  cat(sprintf("# i = %d\n", .x));
-  cat("Orig.:", paste(sprintf("%02d", indices_orig[.x, ])), "\n");
-  cat("HO   :", paste(sprintf("%02d", indices_desp[.x, ])), "\n");
-})
-cat("\n¿Todas las remuestras son iguales?:", all(indices_orig == indices_desp))
-```
-
-## 6. Gráfica del contraste de las hipótesis del ejemplo
-
-```{r}
-# Ahora podemos obtener la distribución bootstrap para la diferencia de dos medias
-# si la hipótesis nula fuera verdadera.
-dist_bt_HO <- remuestras_HO |> mutate(stats = map(splits, dif_dos_medias)) |>
-  unnest(cols = stats)
-
-# Calcular el valor p
-n_extremos <- dist_bt_HO |> filter(id != "Apparent") |>
-  filter(estimate <= dif_obs) |> summarise(n = n())
-p_valor <- (n_extremos + 1) / (R + 1)
-
-# Crear y mostrar situación de manera gráfica
-titulo <- sprintf("Contraste de hipótesis usando\n%d repeticiones de bootstrapping", R)
-ancho <- diff(range(dist_bt_HO[["estimate"]])) / nclass.scott(dist_bt_HO[["estimate"]])
-dist_bt_HO_pl <- dist_bt_HO |> filter(id != "Apparent") |>
-  mutate(extremo = factor(if_else(estimate <= dif_obs, 1, 0))) |>
-  ggplot(aes(x = estimate)) +
-  geom_histogram(aes(alpha = extremo), boundary = dif_obs, binwidth = ancho,
-                 color = "steelblue4", fill = "steelblue") +
-  labs(title = titulo, x = "Diferencia de dos medias", y = "Frecuencia") +
-  geom_vline(xintercept = dif_obs, colour = "steelblue", linetype = "dashed") +
-  annotate("text", x = dif_obs, y = Inf, vjust = 2, hjust = 1.1,
-           label = glue("italic(p) == '{sprintf('%.3f', p_valor)}'"), parse = TRUE) +
-  scale_alpha_manual(values = c("0" = 0.2, "1" = 1), guide = NULL) +
-  theme_pubr() + theme(plot.title = element_text(hjust = 0.5))
-print(dist_bt_HO_pl)
-```
-
+Jara, J. L., & Köhler, J. (s. f.). Inferencia y modelos estadísticos [Perusall].
