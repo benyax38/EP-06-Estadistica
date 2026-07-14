@@ -61,7 +61,7 @@ El estadístico de interés es la diferencia de proporciones del evento "tiene a
 ## Datos
 
 ```{r}
-#Fijar la semilla propia para la reproducibilidad
+#Crear las remuestras
 set.seed(234)
 
 #    - Grupo: casado(a) vs. no casado(a) (a partir de ecivil)
@@ -70,48 +70,39 @@ datos_p1 <- datos_casen |>
   filter(!is.na(s4), !is.na(ecivil)) |>
   mutate(
     Estado_civil = factor(if_else(ecivil == "Casado(a)", "Casado", "No casado")),
-    Tiene_hijos  = factor(if_else(s4 > 0, "Sí", "No"), levels = c("Sí", "No"))
-  ) |>
+    Tiene_hijos  = factor(if_else(s4 > 0, "Sí", "No"), levels = c("Sí", "No"))) |>
   select(Estado_civil, Tiene_hijos)
 
 # Seleccionar una muestra aleatoria de hogares con 100 < n < 150
 n <- 120
 muestra_p1 <- datos_p1 |> slice_sample(n = n)
 
-# Revisar el comportamiento de la muestra (tabla de contingencia)
+# Tabla de Contingencia
 tabla_p1 <- table(muestra_p1$Estado_civil, muestra_p1$Tiene_hijos)
-
-msg <- "Tabla de contingencia de la muestra (P1)"
-cat(msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
+cat("Tabla de contingencia de la muestra\n")
 print(addmargins(tabla_p1))
 ```
 
-Necesitamos usar métodos con remuestreo porque el estadístico de interés (la diferencia de proporciones) se estima sobre grupos con conteos reducidos.
-Al inspeccionar la tabla anterior vemos que algunas celdas quedan con muy pocas observaciones, lo que hace poco confiable la aproximación asintótica de la prueba clásica (que exige que todas las frecuencias esperadas sean suficientemente grandes). Por esta razón preferimos una prueba de permutaciones Monte Carlo, que no descansa en ese supuesto.
+Necesitamos usar métodos con remuestreo, debido al bajo número de observaciones. 
+Realizaremos una prueba de permutaciones Monte Carlo.
 
 ## Formulación de hipótesis
 
 Sean $p_C$ y $p_N$ las proporciones de jefes(as) de hogar con al menos un hijo
 entre los grupos casado y no casado, respectivamente. Entonces:
 
-- $H_0$: la proporción de hogares con al menos un hijo es la misma en ambos
-  grupos: $p_C - p_N = 0$.
-- $H_A$: la proporción de hogares con al menos un hijo difiere entre ambos
-  grupos: $p_C - p_N \neq 0$.
+- $H_0$: la proporción de hogares con al menos un hijo es la misma en ambos grupos: $p_C - p_N = 0$.
+- $H_A$: la proporción de hogares con al menos un hijo difiere entre ambos grupos: $p_C - p_N \neq 0$.
 
 ## Estadístico de interés
 
-El estadístico de interés es la diferencia de las proporciones del evento
-"tiene al menos un hijo" entre el grupo casado y el grupo no casado:
+El estadístico de interés es la diferencia de las proporciones del evento "tiene al menos un hijo" entre el grupo casado y el grupo no casado: 
+
 $\hat{p}_C - \hat{p}_N$.
 
 ## Remuestreo
 
-Para docimar la hipótesis usamos una prueba de permutación Monte Carlo. Bajo
-la hipótesis nula de intercambiabilidad, las etiquetas de estado civil pueden
-reasignarse libremente, por lo que permutamos la columna del grupo y, en cada
-permutación, recalculamos la diferencia de proporciones.
+Usamos una prueba de permutación Monte Carlo. Permutamos la columna del grupo y, en cada permutación, recalculamos la diferencia de proporciones. Efectuando el método de Monte Carlo.
 
 ```{r}
 R <- 1999
@@ -159,7 +150,7 @@ p_valor <- (n_extremos / (R + 1)) |> pull(n)
 
 titulo <- paste("Contraste de hipótesis usando", R, "permutaciones")
 
-# Construcción de etiqueta (paralelo al Script 12.11)
+# Construcción de etiqueta (Script 12.11 del texto base)
 nota <- if_else(p_valor < 0.001,
                 glue("italic(p)", " < ", "'{sprintf('%.3f', 0.001)}'"),
                 glue("italic(p)", " == ", "'{sprintf('%.3f', p_valor)}'"))
@@ -183,10 +174,7 @@ dist_perm_pl <- dist_perm_tbl |>
 
 print(dist_perm_pl)
 
-# Despliegue de resultados en consola
-msg <- "Prueba de permutaciones - diferencia de proporciones"
-cat("\n", msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
+cat("\n Prueba de permutaciones - diferencia de proporciones \n")
 cat(sprintf("Diferencia observada (casado - no casado): %.4f\n", dif_obs))
 cat(sprintf("Valor p (bilateral)                      : %.4f\n", p_valor))
 
@@ -204,19 +192,21 @@ ics <- tibble(
 ) |>
   mutate(across(where(is.numeric), ~ num(., digits = 4)))
 
-msg <- "Intervalo por percentiles para la distribución permutada (nula)"
-cat("\n", msg, ":\n", sep = "")
-cat(rep("-", nchar(msg)), "\n", sep = "")
+cat("Intervalo por percentiles para la distribución permutada (nula) \n")
 print(ics)
 ```
 
 Dado que la distribución permutada se construye en base a la condición de intercambiabilidad, esta representa la situación cuando la hipótesis nula se cumple, por lo que cualquier intervalo que se obtenga de ella también representará esa realidad hipotética. Obtenemos el intervalo extrayendo los percentiles empíricos (2,5 % y 97,5 %) de forma manual, directamente desde los valores de la distribución nula que ya calculamos.  
 
-`
+
 
 ## Conclusión
 
-TERMINANDOLA 
+Tras analizar nuestra muestra de 120 hogares mediante una prueba de permutaciones Monte Carlo (con 1999 repeticiones), observamos una diferencia de $0.1591$ en las proporciones a favor del grupo de casados. 
+
+El valor p bilateral obtenido en la simulación fue de 0.0490. Al ser menor que nuestro nivel de significación ($\alpha = 0,05$), contamos con evidencia suficiente para descartar la hipótesis nula. En términos prácticos, esto nos permite afirmar con un 95 % de confianza que la probabilidad de que un jefe o jefa de hogar tenga al menos un hijo cambia significativamente dependiendo de su estado civil, siendo notablemente mayor entre quienes están casados.
+
+Para respaldar esta decisión, construimos un intervalo por percentiles [-0.1298,0.1232]. Como nuestra diferencia observada 0.1591 se escapa completamente de este rango de azar, reafirmamos estadísticamente que la relación que encontramos entre el matrimonio y tener hijos es genuina y no un mero accidente de la muestra.
 
 ---
 
