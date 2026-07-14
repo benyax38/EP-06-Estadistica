@@ -22,10 +22,14 @@ knitr::opts_chunk$set(
   fig.height = 4 # Parámetros para el tamaño de gráficas
 )
 
-library(tidyr)
 library(dplyr)
 library(ggpubr)
-library(ez)
+library(glue)
+library(purrr)
+library(rsample)
+library(rstatix)
+library(tibble)
+library(tidyr)
 ```
 
 # Contexto
@@ -44,33 +48,177 @@ head(datos_casen)
 
 # Pregunta 1
 
-Propongan una pregunta de investigación original, que involucre la comparación de la frecuencia en que se observa un evento o característica en dos grupos independientes (más abajo se dan unos ejemplos). Fijando una semilla propia, seleccionen una muestra aleatoria de hogares (100 < n < 150) y respondan la pregunta propuesta utilizando una prueba de permutaciones Monte Carlo. Deben reportar un intervalo de confianza para el estadístico utilizado usando las mismas remuestras.
-
-Para las personas con hijos, hay una diferencia entre si son solteros o no solteros
-(s4 = cantidad de hijos, ecivil = estado civil
-1 Casado(a)
-2 Conviviente o pareja sin acuerdo de unión civil
-3 Conviviente civil (con acuerdo de unión civil)
-4 Anulado(a)
-5 Separado(a)
-6 Divorciado (a)
-7 Viudo(a)
-8 Soltero(a)
-)
-
-# Respuesta 1
+Propongan una pregunta de investigación original, que involucre la comparación de la frecuencia en que se observa un evento o característica en dos grupos independientes. Fijando una semilla propia, seleccionen una muestra aleatoria de hogares (100 < n < 150) y respondan la pregunta propuesta utilizando una prueba de permutaciones Monte Carlo. Deben reportar un intervalo de confianza para el estadístico utilizado usando las mismas remuestras.
 
 ## Pregunta de investigación
 
+Nos centramos en el estado civil del jefe o la jefa de hogar (ecivil) y en la cantidad de hijos que declara (s4). A partir de esta última variable definimos el evento "tiene al menos un hijo" (s4 > 0). La pregunta de investigación es:
+
+¿Es igual la proporción de jefes de hogar que tienen al menos un hijo entre quienes están casados(as) y quienes no lo están?
+
+El estadístico de interés es la diferencia de proporciones del evento "tiene al menos un hijo" entre ambos grupos independientes (casados vs. no casados).
+
 ## Datos
+
+```{r}
+#Fijar la semilla propia para la reproducibilidad
+set.seed(234)
+
+#    - Grupo: casado(a) vs. no casado(a) (a partir de ecivil)
+#    - Evento: tiene al menos un hijo (a partir de s4)
+datos_p1 <- datos_casen |>
+  filter(!is.na(s4), !is.na(ecivil)) |>
+  mutate(
+    Estado_civil = factor(if_else(ecivil == "Casado(a)", "Casado", "No casado")),
+    Tiene_hijos  = factor(if_else(s4 > 0, "Sí", "No"), levels = c("Sí", "No"))
+  ) |>
+  select(Estado_civil, Tiene_hijos)
+
+# Seleccionar una muestra aleatoria de hogares con 100 < n < 150
+n <- 120
+muestra_p1 <- datos_p1 |> slice_sample(n = n)
+
+# Revisar el comportamiento de la muestra (tabla de contingencia)
+tabla_p1 <- table(muestra_p1$Estado_civil, muestra_p1$Tiene_hijos)
+
+msg <- "Tabla de contingencia de la muestra (P1)"
+cat(msg, ":\n", sep = "")
+cat(rep("-", nchar(msg)), "\n", sep = "")
+print(addmargins(tabla_p1))
+```
+
+Necesitamos usar métodos con remuestreo porque el estadístico de interés (la diferencia de proporciones) se estima sobre grupos con conteos reducidos.
+Al inspeccionar la tabla anterior vemos que algunas celdas quedan con muy pocas observaciones, lo que hace poco confiable la aproximación asintótica de la prueba clásica (que exige que todas las frecuencias esperadas sean suficientemente grandes). Por esta razón preferimos una prueba de permutaciones Monte Carlo, que no descansa en ese supuesto.
 
 ## Formulación de hipótesis
 
+Sean $p_C$ y $p_N$ las proporciones de jefes(as) de hogar con al menos un hijo
+entre los grupos casado y no casado, respectivamente. Entonces:
+
+- $H_0$: la proporción de hogares con al menos un hijo es la misma en ambos
+  grupos: $p_C - p_N = 0$.
+- $H_A$: la proporción de hogares con al menos un hijo difiere entre ambos
+  grupos: $p_C - p_N \neq 0$.
+
 ## Estadístico de interés
+
+El estadístico de interés es la diferencia de las proporciones del evento
+"tiene al menos un hijo" entre el grupo casado y el grupo no casado:
+$\hat{p}_C - \hat{p}_N$.
 
 ## Remuestreo
 
+Para docimar la hipótesis usamos una prueba de permutación Monte Carlo. Bajo
+la hipótesis nula de intercambiabilidad, las etiquetas de estado civil pueden
+reasignarse libremente, por lo que permutamos la columna del grupo y, en cada
+permutación, recalculamos la diferencia de proporciones.
+
+```{r}
+R <- 1999
+alfa <- 0.05
+set.seed(234)
+
+# Generamos las permutaciones de la etiqueta de grupo (Estado_civil)
+# incluimos la muestra original (apparent = TRUE)
+remuestras <- permutations(muestra_p1, permute = Estado_civil,
+                           times = R, apparent = TRUE)
+
+dif_proporciones <- function(remuestra, ...) {
+  analysis(remuestra) |>
+    group_by(Estado_civil) |>
+    summarise(n = n(), p = mean(Tiene_hijos == "Sí"), .groups = "drop") |>
+    summarise(
+      term = "Dif. proporciones",
+      estimate = p[1] - p[2],
+      std.error = sqrt(sum(p * (1 - p) / n))
+    )
+}
+
+# Obtener la distribución de permutaciones
+dist_perm <- remuestras |> 
+  mutate(stats = map(splits, dif_proporciones))
+
+# Simplificar a una tabla
+dist_perm_tbl <- dist_perm |> 
+  select(-splits) |> 
+  unnest(cols = stats)
+```
+
+```{r}
+# Obtener la diferencia observada en la muestra original
+dif_obs <- dist_perm_tbl |> 
+  filter(id == "Apparent") |> 
+  pull(estimate)
+
+# Calcular el valor p
+n_extremos <- dist_perm_tbl |>
+  filter(abs(estimate) >= abs(dif_obs)) |> 
+  summarise(n = n())
+
+p_valor <- (n_extremos / (R + 1)) |> pull(n)
+
+titulo <- paste("Contraste de hipótesis usando", R, "permutaciones")
+
+# Construcción de etiqueta (paralelo al Script 12.11)
+nota <- if_else(p_valor < 0.001,
+                glue("italic(p)", " < ", "'{sprintf('%.3f', 0.001)}'"),
+                glue("italic(p)", " == ", "'{sprintf('%.3f', p_valor)}'"))
+
+ancho_barra <- diff(range(dist_perm_tbl[["estimate"]])) /
+  nclass.scott(dist_perm_tbl[["estimate"]])
+ancho_barra_ajustado <- abs(dif_obs) / max(1, round(abs(dif_obs) / ancho_barra))
+
+dist_perm_pl <- dist_perm_tbl |>
+  mutate(extremo = factor(if_else(abs(estimate) >= abs(dif_obs), 1, 0))) |>
+  ggplot(aes(x = estimate)) +
+  geom_histogram(aes(alpha = extremo), boundary = 0, binwidth = ancho_barra_ajustado,
+                 color = "steelblue4", fill = "steelblue") +
+  labs(title = titulo, x = "Diferencia de proporciones", y = "Frecuencia") +
+  geom_vline(xintercept = c(-dif_obs, dif_obs), colour = "steelblue4",
+             linetype = "dashed") +
+  annotate("text", x = dif_obs, y = Inf, hjust = 1.2, vjust = 2,
+           label = nota, parse = TRUE) +
+  scale_alpha_manual(values = c("0" = 0.2, "1" = 1), guide = NULL) +
+  theme(plot.title = element_text(hjust = 0.5)) + theme_pubr()
+
+print(dist_perm_pl)
+
+# Despliegue de resultados en consola
+msg <- "Prueba de permutaciones - diferencia de proporciones"
+cat("\n", msg, ":\n", sep = "")
+cat(rep("-", nchar(msg)), "\n", sep = "")
+cat(sprintf("Diferencia observada (casado - no casado): %.4f\n", dif_obs))
+cat(sprintf("Valor p (bilateral)                      : %.4f\n", p_valor))
+
+limites <- dist_perm_tbl |>
+  filter(id != "Apparent") |> 
+  pull(estimate) |>
+  quantile(probs = c(alfa / 2, 1 - (alfa / 2)))
+
+# intervalos de confianza:
+ics <- tibble(
+  term = "Dif. proporciones",
+  .lower = limites[1],
+  .upper = limites[2],
+  method = "percentile"
+) |>
+  mutate(across(where(is.numeric), ~ num(., digits = 4)))
+
+msg <- "Intervalo por percentiles para la distribución permutada (nula)"
+cat("\n", msg, ":\n", sep = "")
+cat(rep("-", nchar(msg)), "\n", sep = "")
+print(ics)
+```
+
+Dado que la distribución permutada se construye en base a la condición de intercambiabilidad, esta representa la situación cuando la hipótesis nula se cumple, por lo que cualquier intervalo que se obtenga de ella también representará esa realidad hipotética. Obtenemos el intervalo extrayendo los percentiles empíricos (2,5 % y 97,5 %) de forma manual, directamente desde los valores de la distribución nula que ya calculamos.  
+
+`
+
 ## Conclusión
+
+TERMINANDOLA 
+
+---
 
 
 # Problema 2
